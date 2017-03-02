@@ -1,0 +1,39 @@
+# Igonre the data
+*/Data/*
+
+#Ignore the ipynb temp files
+.ipynb_checkpoints
+
+#Ignore Mac bs
+.DS_Store
+
+#Ignore LaTeX bs
+
+
+*.aux
+*.glo
+*.idx
+*.log
+*.toc
+*.ist
+*.acn
+*.acr
+*.snm
+*.nav
+*.fig
+*.fls
+*.alg
+*.bbl
+*.blg
+*.glg
+*.gls
+*.ilg
+*.ind
+*.lof
+*.lot
+*.maf
+*.mtc
+*.mtc1
+*.out
+*.fdb_latexmk
+*.synctex.gz
