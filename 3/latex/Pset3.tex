@@ -1,0 +1,771 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass{article}
+
+    
+    
+    \usepackage{graphicx} % Used to insert images
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{color} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{ulem} % ulem is needed to support strikethroughs (\sout)
+    
+
+    
+    
+    \definecolor{orange}{cmyk}{0,0.4,0.8,0.2}
+    \definecolor{darkorange}{rgb}{.71,0.21,0.01}
+    \definecolor{darkgreen}{rgb}{.12,.54,.11}
+    \definecolor{myteal}{rgb}{.26, .44, .56}
+    \definecolor{gray}{gray}{0.45}
+    \definecolor{lightgray}{gray}{.95}
+    \definecolor{mediumgray}{gray}{.8}
+    \definecolor{inputbackground}{rgb}{.95, .95, .85}
+    \definecolor{outputbackground}{rgb}{.95, .95, .95}
+    \definecolor{traceback}{rgb}{1, .95, .95}
+    % ansi colors
+    \definecolor{red}{rgb}{.6,0,0}
+    \definecolor{green}{rgb}{0,.65,0}
+    \definecolor{brown}{rgb}{0.6,0.6,0}
+    \definecolor{blue}{rgb}{0,.145,.698}
+    \definecolor{purple}{rgb}{.698,.145,.698}
+    \definecolor{cyan}{rgb}{0,.698,.698}
+    \definecolor{lightgray}{gray}{0.5}
+    
+    % bright ansi colors
+    \definecolor{darkgray}{gray}{0.25}
+    \definecolor{lightred}{rgb}{1.0,0.39,0.28}
+    \definecolor{lightgreen}{rgb}{0.48,0.99,0.0}
+    \definecolor{lightblue}{rgb}{0.53,0.81,0.92}
+    \definecolor{lightpurple}{rgb}{0.87,0.63,0.87}
+    \definecolor{lightcyan}{rgb}{0.5,1.0,0.83}
+    
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{Pset3}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=blue,
+      linkcolor=darkorange,
+      citecolor=darkgreen,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \section{Table of Contents}\label{table-of-contents}
+
+{1~~}Question 1
+
+{2~~}Question 4
+
+{3~~}Heavy lifting for 2.
+
+    \section{Question 1}\label{question-1}
+
+(25pt + 10pt) In this question, we use the file \texttt{brader.csv}
+which contains data from Brader, Valentino and Suhay (2008). The file
+includes the following variables for \(n=265\) observations:
+
+\begin{itemize}
+\tightlist
+\item
+  the outcome of interest -- a four-point scale in response to \emph{Do
+  you think the number of immigrants from foreign countries should be
+  increased or decreased?}
+\item
+  tone of the story treatment (positive or negative)
+\item
+  ethnicity of the featured immigrant treatment (Mexican or Russian)
+\item
+  respondents' age
+\item
+  respondents' income
+\end{itemize}
+
+Consider the following ordered logit model for an ordered outcome
+variable with four levels:
+\[ \Pr(Y_i \leq j \mid X_i) \ = \ \frac{\exp(\psi_j - X_i^\top\beta)}
+            {1 + \exp(\psi_j - X_i^\top\beta)} \] for \(j = 1,2,3,4\)
+and \(i = 1,...,n\) where \(\psi_4=\infty\) and
+\(X_i = [{\tt tone}_i \ {\tt eth}_i \ {\tt ppage}_i \ {\tt ppincimp}_i]^\top\)
+(i.e.~no intercept).
+
+    \textbf{a) (5pt)} Write down the likelihood function.
+
+    \emph{To simplify the notation, the indexs} \(i,j,k\) \emph{are used
+consistently,} \(i\) \emph{to iterate over the number of
+observations,}\(j\) \emph{to iterate over the number of outcomes, and}
+\(k\) * to iterate over the predictors.*
+
+The log-likelihood can be easily seen to be:
+
+\[
+l = 
+\prod_{i=1}^n 
+\frac{\exp(\psi_{Y_i} - X_i^\top\beta)}
+     {1 + \exp(\psi_{Y_i} - X_i^\top\beta)} -
+\frac{\exp(\psi_{Y_i-1} - X_i^\top\beta)}
+     {1 + \exp(\psi_{Y_i-1} - X_i^\top\beta)}
+\]
+
+To simplify, from here on \(\phi\) will be the inverse link function and
+\(\phi'\) its derivative. This allows us to write the above expression
+in a more Matricial form as:
+
+\[
+\prod_{i=1}^n \sum_{j=1}^4
+\tilde M_{i,j}
+\phi\left(\psi_{j} - \sum_{k=1}^m X_{ik}\beta_k\right)
+\]
+
+where
+
+\[
+\tilde M = MK =  M 
+\begin{pmatrix}
+  1 &  0 &  0 &  0\\
+ -1 &  1 &  0 &  0\\
+  0 & -1 &  1 &  0\\
+  0 &  0 & -1 &  1\\
+\end{pmatrix}
+\]
+
+And \(M\) is the OneHot matrix for the \(Y_i\), i.e.~a matrix that has
+\(n\) rows, and each row is the row vector with zeros everywhere but at
+the position \(j\), where the the observed \(Y\) is \(Y_j\).
+
+In practice, however, we are interested in the log-likelihood, which is:
+
+\[
+L = \sum_{i=1}^n \log \sum_{j=1}^4
+\tilde M_{i,j}
+\phi\left(\psi_{j} - \sum_{k=1}^m X_{ik}\beta_k\right)
+\]
+
+Warning: We will use a great deal of abstraction because the functions
+are a mess otherwise, here we go:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} log\PYZus{}likelihood \PY{o}{=} wrapper\PY{p}{(}
+            \PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{,}M\PY{p}{,}phi\PY{p}{,}dphi\PY{p}{)}\PY{p}{\PYZob{}}
+                \PY{k+kp}{sum}\PY{p}{(}\PY{k+kp}{log}\PY{p}{(}\PY{k+kp}{rowSums}\PY{p}{(}M\PY{o}{*}phi\PY{p}{)}\PY{p}{)}\PY{p}{)}
+            \PY{p}{\PYZcb{}}
+        \PY{p}{)}
+\end{Verbatim}
+
+    The wrapper function is just an abstaction (see it at the end of the
+file, in the annex), that computes the variables \texttt{M},
+\texttt{phi}\(=\phi\left(\psi_{j} - \sum_{k=1}^m X_{ik}\beta_k\right)\),
+\texttt{dphi}\(=\phi'\left(\psi_{j} - \sum_{k=1}^m X_{ik}\beta_k\right)\).
+We use it because everything is easier in those variables. When a
+function goes trough the ``wrapper'', its arguments change to become
+(X,Y,beta,psi), and the wrapper computes M, phi and dphi.
+
+    \begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  (10pt) Derive the score functions for \(\beta\) and \(\psi_j\).
+\end{enumerate}
+
+    To simplify the computations, let
+\(\phi_{ij}=\phi(\psi_{j} - X_i^\top\beta)\), and
+\(\phi_{ij}'=\phi'(\psi_{j} - X_i^\top\beta)\). Then we will have:
+
+\[
+L = \sum_{i=1}^n \log \sum_{j=1}^4
+\tilde M_{i,j}
+\phi_{i,j}
+\]
+
+Since deriveatives and sums commute freely, we can compute the score
+easily:
+
+\[
+\frac{\partial L}{\partial \beta_k} = -
+\sum_{i=1}^n \left (\sum_{j=0}^4 \tilde M_{i,j}\phi_{i,j} \right )^{-1}
+\left (\sum_{j=0}^4
+\tilde M_{i,j}\phi_{i,j}'\right )  X_{ik}
+\]
+
+in \texttt{R} that is:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}7}]:} beta\PYZus{}score \PY{o}{=}  wrapper\PY{p}{(}
+            \PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{,}M\PY{p}{,}phi\PY{p}{,}dphi\PY{p}{)}\PY{p}{\PYZob{}}
+                \PY{o}{\PYZhy{}}\PY{p}{(}\PY{k+kp}{rowSums}\PY{p}{(}M\PY{o}{*}dphi\PY{p}{)}\PY{o}{/}\PY{k+kp}{rowSums}\PY{p}{(}M\PY{o}{*}phi\PY{p}{)}\PY{p}{)}\PY{o}{\PYZpc{}*\PYZpc{}}X
+            \PY{p}{\PYZcb{}}
+        \PY{p}{)}
+\end{Verbatim}
+
+    For the \(\psi\), the result is equally immediate:
+
+\[
+\frac{\partial L}{\partial \psi_j} = 
+\sum_{i=1}^n \left (\sum_{j=0}^4 \tilde M_{i,j}\phi_{i,j} \right )^{-1}
+\tilde M_{i,j}\phi_{i,j}'
+\]
+
+which in \texttt{R} can be written as:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}95}]:} psi\PYZus{}score \PY{o}{=}  wrapper\PY{p}{(}
+             \PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{,}M\PY{p}{,}phi\PY{p}{,}dphi\PY{p}{)}\PY{p}{\PYZob{}}
+                 r \PY{o}{=} \PY{p}{(}\PY{k+kp}{rowSums}\PY{p}{(}M\PY{o}{*}phi\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m}{\PYZhy{}1}\PY{o}{\PYZpc{}*\PYZpc{}}\PY{p}{(}M\PY{o}{*}dphi\PY{p}{)}\PY{p}{)}
+                 r\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{p}{(}\PY{k+kp}{length}\PY{p}{(}r\PY{p}{)}\PY{l+m}{\PYZhy{}1}\PY{p}{)}\PY{p}{]}
+             \PY{p}{\PYZcb{}}
+         \PY{p}{)}
+\end{Verbatim}
+
+    (10pt) Using (a) and (b), calculate the maximum likelihood estimates of
+\(\beta\) and \(\psi_j\) and their standard errors via the
+\texttt{optim} function in R. Confirm your results by comparing them to
+outputs from the \texttt{polr} function in the \texttt{MASS} package.
+
+    Load the data:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}96}]:} brader \PY{o}{=} read.csv\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Data/brader.csv\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+    Prepare a Handler function for \texttt{optim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}104}]:} likelihood\PYZus{}handler \PY{o}{=} \PY{k+kr}{function} \PY{p}{(}x\PY{p}{,}data\PY{p}{)}\PY{p}{\PYZob{}}
+              X \PY{o}{=} data\PY{p}{[[}\PY{l+m}{1}\PY{p}{]]}
+              Y \PY{o}{=} data\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}
+              o \PY{o}{=} \PY{k+kp}{ncol}\PY{p}{(}X\PY{p}{)}
+              beta \PY{o}{=} x\PY{p}{[}\PY{l+m}{1}\PY{o}{:}o\PY{p}{]}
+              psi \PY{o}{=} x\PY{p}{[}\PY{p}{(}o\PY{l+m}{+1}\PY{p}{)}\PY{o}{:}\PY{k+kp}{length}\PY{p}{(}x\PY{p}{)}\PY{p}{]}
+              l \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}psi\PY{p}{)}
+              diff\PYZus{}psi \PY{o}{=} psi\PY{p}{[}\PY{l+m}{2}\PY{o}{:}l\PY{p}{]}\PY{o}{\PYZhy{}}psi\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{p}{(}l\PY{l+m}{\PYZhy{}1}\PY{p}{)}\PY{p}{]}
+              \PY{k+kr}{if}\PY{p}{(}\PY{k+kp}{min}\PY{p}{(}diff\PYZus{}psi\PY{p}{)}\PY{o}{\PYZlt{}=}\PY{l+m}{0}\PY{p}{)}
+                  \PY{k+kr}{return} \PY{p}{(}\PY{l+m}{1E5}\PY{p}{)}
+              \PY{k+kr}{return}\PY{p}{(}\PY{o}{\PYZhy{}}log\PYZus{}likelihood\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}\PY{p}{)}
+          \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}114}]:} gradient\PYZus{}handler \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}x\PY{p}{,}data\PY{p}{)}\PY{p}{\PYZob{}}
+              X \PY{o}{=} data\PY{p}{[[}\PY{l+m}{1}\PY{p}{]]}
+              Y \PY{o}{=} data\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}
+              o \PY{o}{=} \PY{k+kp}{ncol}\PY{p}{(}X\PY{p}{)}
+              beta \PY{o}{=} x\PY{p}{[}\PY{l+m}{1}\PY{o}{:}o\PY{p}{]}
+              psi \PY{o}{=} x\PY{p}{[}\PY{p}{(}o\PY{l+m}{+1}\PY{p}{)}\PY{o}{:}\PY{k+kp}{length}\PY{p}{(}x\PY{p}{)}\PY{p}{]}
+              l \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}psi\PY{p}{)}
+              diff\PYZus{}psi \PY{o}{=} psi\PY{p}{[}\PY{l+m}{2}\PY{o}{:}l\PY{p}{]}\PY{o}{\PYZhy{}}psi\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{p}{(}l\PY{l+m}{\PYZhy{}1}\PY{p}{)}\PY{p}{]}
+              \PY{k+kr}{if}\PY{p}{(}\PY{k+kp}{min}\PY{p}{(}diff\PYZus{}psi\PY{p}{)}\PY{o}{\PYZlt{}=}\PY{l+m}{0}\PY{p}{)}
+                  \PY{k+kr}{return}\PY{p}{(}x\PY{o}{*}\PY{l+m}{0}\PY{p}{)}\PY{p}{;}
+              sbeta \PY{o}{=} \PY{p}{(}\PY{o}{\PYZhy{}}beta\PYZus{}score\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}\PY{p}{)} 
+              spsi  \PY{o}{=} \PY{p}{(}\PY{o}{\PYZhy{}}psi\PYZus{}score\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}\PY{p}{)} 
+              \PY{k+kp}{append}\PY{p}{(}sbeta\PY{p}{,}spsi\PY{p}{)}
+          \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+    Then we prepare the data as our function needs it
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}111}]:} Y \PY{o}{=} brader\PY{o}{\PYZdl{}}immigr
+          X \PY{o}{=} \PY{k+kp}{data.matrix}\PY{p}{(}brader\PY{p}{)}\PY{p}{[}\PY{p}{,}\PY{l+m}{2}\PY{o}{:}\PY{l+m}{5}\PY{p}{]}
+          data \PY{o}{=} \PY{k+kt}{list}\PY{p}{(}X\PY{p}{,}Y\PY{p}{)}
+          beta \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}\PY{l+m}{0.5}\PY{p}{,} \PY{l+m}{0}\PY{p}{,} \PY{l+m}{0}\PY{p}{,} \PY{l+m}{0}\PY{p}{)}
+          psi \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}\PY{l+m}{\PYZhy{}1}\PY{p}{,} \PY{l+m}{0}\PY{p}{,} \PY{l+m}{1}\PY{p}{)}
+          betapsi \PY{o}{=} \PY{k+kp}{append}\PY{p}{(}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}
+          betapsi
+\end{Verbatim}
+
+    \begin{enumerate*}
+\item 0.5
+\item 0
+\item 0
+\item 0
+\item -1
+\item 0
+\item 1
+\end{enumerate*}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}112}]:} psi\PYZus{}score\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}
+\end{Verbatim}
+
+    \begin{enumerate*}
+\item -48.8333052835874
+\item -6.56482749873738
+\item -11.6548684369225
+\end{enumerate*}
+
+    
+    And we run the optimization
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}113}]:} r \PY{o}{=} optim\PY{p}{(}betapsi\PY{p}{,}likelihood\PYZus{}handler\PY{p}{,} gr \PY{o}{=} gradient\PYZus{}handler\PY{p}{,} data \PY{o}{=} data\PY{p}{,}
+                    hessian \PY{o}{=} \PY{l+m}{1}\PY{p}{,} control \PY{o}{=} \PY{p}{(}reltol \PY{o}{=} \PY{l+m}{1E\PYZhy{}12}\PY{p}{)}\PY{p}{)}
+          r\PY{o}{\PYZdl{}}par\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{4}\PY{p}{]}
+          r\PY{o}{\PYZdl{}}par\PY{p}{[}\PY{l+m}{5}\PY{o}{:}\PY{l+m}{7}\PY{p}{]}
+          \PY{o}{\PYZhy{}}log\PYZus{}likelihood\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}r\PY{o}{\PYZdl{}}par\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{4}\PY{p}{]}\PY{p}{,}r\PY{o}{\PYZdl{}}par\PY{p}{[}\PY{l+m}{5}\PY{o}{:}\PY{l+m}{7}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{enumerate*}
+\item 0.75057472585271
+\item 0.182514633025783
+\item 0.00954246157357417
+\item 0.00453801085115179
+\end{enumerate*}
+
+    
+    \begin{enumerate*}
+\item -1.64987523554466
+\item 0.153712692971585
+\item 1.37459144576628
+\end{enumerate*}
+
+    
+    325.94791194349
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}31}]:} \PY{k+kn}{library}\PY{p}{(}MASS\PY{p}{)}
+         
+         plr \PY{o}{\PYZlt{}\PYZhy{}} polr\PY{p}{(} \PY{k+kp}{factor}\PY{p}{(}immigr\PY{p}{)} \PY{o}{\PYZti{}} tone \PY{o}{+} eth \PY{o}{+} ppage \PY{o}{+} ppincimp\PY{p}{,} 
+                            data \PY{o}{=} brader\PY{p}{,} method \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{logistic\PYZdq{}}\PY{p}{,} Hess \PY{o}{=} \PY{l+m}{1}\PY{p}{)}
+         \PY{k+kp}{summary}\PY{p}{(}plr\PY{p}{)}
+         \PY{o}{\PYZhy{}}log\PYZus{}likelihood\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}plr\PY{o}{\PYZdl{}}coefficients\PY{p}{,}plr\PY{o}{\PYZdl{}}z\PY{p}{)}
+\end{Verbatim}
+
+    
+    \begin{verbatim}
+Call:
+polr(formula = factor(immigr) ~ tone + eth + ppage + ppincimp, 
+    data = brader, Hess = 1, method = "logistic")
+
+Coefficients:
+            Value Std. Error t value
+tone     0.749446   0.230241  3.2550
+eth      0.166225   0.227063  0.7321
+ppage    0.009345   0.007131  1.3105
+ppincimp 0.004149   0.029511  0.1406
+
+Intercepts:
+    Value   Std. Error t value
+1|2 -1.6671  0.5664    -2.9434
+2|3  0.1318  0.5401     0.2441
+3|4  1.3535  0.5466     2.4761
+
+Residual Deviance: 651.8892 
+AIC: 665.8892 
+    \end{verbatim}
+
+    
+    325.944618379387
+
+    
+    ** d. (10pt) Bonus question. ** The standard ordered logit model is
+sometimes called the proportional odds model because it assumes the
+effect of \(X_i\) is constant across levels on the odds ratio scale. One
+approach to relax this assumption is to allow the coefficients to vary
+across levels, i.e.,
+\[ \Pr(Y_i \leq j \mid X_i) \ = \ \frac{\exp(\psi_j - X_i^\top\beta_j)}
+            {1 + \exp(\psi_j - X_i^\top\beta_j)} \] for \(j = 1,2,3,4\)
+and \(i = 1,...,n\) where \(\beta_4=0\) (i.e.~the fourth group is a
+reference group), and \(\psi_4=\infty\). For this model, derive the
+likelihood and score functions, and use \texttt{optim} to obtain the
+maximum likelihood estimates of \(\beta_j\) and \(\psi_j\) and their
+standard errors for the \texttt{brader} data.
+
+    A direct modification of the above exercise, substituting \(\beta_k\)
+for \(\beta_{k,j}\) works: We will have:
+
+\[
+L = \sum_{i=1}^n \log \sum_{j=1}^4
+\tilde M_{i,j}
+\phi\left(\psi_{j} - \sum_{k=1}^m X_{ik}\beta_{kj}\right)
+\]
+
+therefore, since the formula is essentialy the same (and thanks to
+\texttt{R} not really caring much about the shape of the objects --
+which is nice!), the same \texttt{log\_likelihood} coded above still
+works!
+
+    Since deriveatives and sums commute freely, we can compute the score
+easily:
+
+\[
+\frac{\partial L}{\partial \beta_{kj}} = -
+\sum_{i=1}^n \left (\sum_{j=0}^4 \tilde M_{i,j}\phi_{i,j} \right )^{-1}
+\tilde M_{i,j}\phi_{i,j}'  X_{ik}
+\]
+
+in this case we must modify the function, to create a new function:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}69}]:} extra\PYZus{}beta\PYZus{}score \PY{o}{=} wrapper\PY{p}{(}
+             \PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{,}M\PY{p}{,}phi\PY{p}{,}dphi\PY{p}{)}\PY{p}{\PYZob{}}
+                 \PY{c+c1}{\PYZsh{}this corresponds to a matrix that has the same elements in every}
+                 \PY{c+c1}{\PYZsh{}row, and are the (sum **)\PYZca{}\PYZob{}\PYZhy{}1\PYZcb{} in the formula above}
+                 M1 \PY{o}{=} \PY{k+kt}{matrix}\PY{p}{(}\PY{k+kp}{rep}\PY{p}{(}\PY{k+kp}{rowSums}\PY{p}{(}M\PY{o}{*}phi\PY{p}{)}\PY{p}{,}\PY{k+kp}{ncol}\PY{p}{(}M\PY{p}{)}\PY{p}{)}\PY{p}{,}ncol\PY{o}{=}\PY{k+kp}{ncol}\PY{p}{(}M\PY{p}{)}\PY{p}{,}byrow\PY{o}{=}\PY{l+m}{0}\PY{p}{)}
+                 \PY{o}{\PYZhy{}}\PY{k+kp}{t}\PY{p}{(}M\PY{o}{*}dphi\PY{o}{/}M1\PY{p}{)}\PY{o}{\PYZpc{}*\PYZpc{}}X
+             \PY{p}{\PYZcb{}}
+         \PY{p}{)}
+\end{Verbatim}
+
+    For the \(\psi\), the result is equally immediate:
+
+\[
+\frac{\partial L}{\partial \psi_j} = 
+\sum_{i=1}^n \left (\sum_{j=0}^4 \tilde M_{i,j}\phi_{i,j} \right )^{-1}
+\tilde M_{i,j}\phi_{i,j}'
+\]
+
+As for the likelihood, the same function does the job
+
+    \section{Question 4}\label{question-4}
+
+Cross Validation for Polynomial Regression. (18 points) Consider the
+following four data generating processes:
+
+\begin{itemize}
+\tightlist
+\item
+  DGP 1:
+  \(Y = -2* 1_{\{X < -3\}} + 2.55* 1_{\{ X > -2\}} - 2* 1_{\{X>0\}} + 4* 1_{\{X > 2\}} -1* 1_{\{ X > 3\}}+ \epsilon\)
+\item
+  DGP 2: \(Y = 6 + 0.4 X - 0.36X^2 + 0.005 X^3 + \epsilon\)
+\item
+  DGP 3: \$Y = 2.83 * \sin(\frac{\pi}{2} \times X) +\epsilon \$
+\item
+  DGP 4: \(Y = 4 * \sin(3 \pi \times X) * 1_{\{X>0\}}+ \epsilon\)
+\end{itemize}
+
+\(X\) is drawn from the uniform distribution in {[}-4,4{]} and
+\$\epsilon
+ \$ is drawn from a standard normal (\(\mu =0\), \(\sigma^2\) = 1).
+\textbackslash{}begin\{enumerate\}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} DGP1 \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}X\PY{p}{)}\PY{p}{\PYZob{}}
+            \PY{l+m}{\PYZhy{}2}   \PY{o}{*}\PY{p}{(}X \PY{o}{\PYZlt{}} \PY{l+m}{\PYZhy{}3}\PY{p}{)}
+            \PY{l+m}{+2.55}\PY{o}{*}\PY{p}{(}X \PY{o}{\PYZgt{}} \PY{l+m}{\PYZhy{}2}\PY{p}{)}
+            \PY{l+m}{\PYZhy{}2}   \PY{o}{*}\PY{p}{(}X \PY{o}{\PYZgt{}}  \PY{l+m}{0}\PY{p}{)}
+            \PY{l+m}{+4}   \PY{o}{*}\PY{p}{(}X \PY{o}{\PYZgt{}}  \PY{l+m}{2}\PY{p}{)}
+            \PY{l+m}{\PYZhy{}1}   \PY{o}{*}\PY{p}{(}X \PY{o}{\PYZgt{}}  \PY{l+m}{3}\PY{p}{)}\PY{p}{\PYZcb{}}
+        DGP2 \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}X\PY{p}{)}\PY{p}{\PYZob{}}
+            \PY{l+m}{6}\PY{l+m}{+0.4}\PY{o}{*}X\PY{l+m}{\PYZhy{}0.36}\PY{o}{*}X\PY{o}{\PYZca{}}\PY{l+m}{2}\PY{l+m}{+0.005}\PY{o}{*}X\PY{o}{\PYZca{}}\PY{l+m}{3}
+        \PY{p}{\PYZcb{}}
+        DGP3 \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}X\PY{p}{)}\PY{p}{\PYZob{}}
+            \PY{l+m}{2.83}\PY{o}{*}\PY{k+kp}{sin}\PY{p}{(}\PY{k+kc}{pi}\PY{o}{/}\PY{l+m}{2}\PY{o}{*}X\PY{p}{)}
+        \PY{p}{\PYZcb{}}
+        DGP4 \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}X\PY{p}{)}\PY{p}{\PYZob{}}
+            \PY{l+m}{4}\PY{o}{*}\PY{k+kp}{sin}\PY{p}{(}\PY{l+m}{3}\PY{o}{*}\PY{k+kc}{pi}\PY{o}{*}x\PY{p}{)}\PY{o}{*}\PY{p}{(}X\PY{o}{\PYZgt{}}\PY{l+m}{0}\PY{p}{)}
+        \PY{p}{\PYZcb{}}
+        ERR \PY{o}{=} rnorm
+        DGP \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}DGP1\PY{p}{,}DGP2\PY{p}{,}DGP3\PY{p}{,}DGP4\PY{p}{)}
+\end{Verbatim}
+
+    (5 pts.) Write a function to estimate the generalization error of a
+polynomial by \(k\)-fold cross-validation. It should take as arguments
+the data, the degree of the polynomial, and the number of folds \(k\).
+It should return the cross-validation mean squared error.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} n \PY{o}{=} \PY{k+kp}{nrow}\PY{p}{(}data\PY{p}{)}\PY{p}{;}
+        data \PY{o}{=} data\PY{p}{[}\PY{k+kp}{sample}\PY{p}{(}n\PY{p}{)}\PY{p}{,}\PY{p}{]}
+        folds \PY{o}{=} \PY{k+kp}{cut}\PY{p}{(}\PY{k+kp}{seq}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}data\PY{p}{)}\PY{p}{,}breaks\PY{o}{=}N\PY{p}{,}labels\PY{o}{=}\PY{k+kc}{FALSE}\PY{p}{)}
+        \PY{k+kr}{for}\PY{p}{(}i \PY{k+kr}{in} \PY{l+m}{1}\PY{o}{:}N\PY{p}{)}
+        \PY{p}{\PYZob{}}
+            ind \PY{o}{=} \PY{k+kp}{which}\PY{p}{(}folds\PY{o}{==}i\PY{p}{,}arr.ind\PY{o}{=}\PY{k+kc}{TRUE}\PY{p}{)}
+            test \PY{o}{=} yourData\PY{p}{[}ind\PY{p}{,}\PY{p}{]}
+            train \PY{o}{=} yourData\PY{p}{[}\PY{o}{\PYZhy{}}ind\PY{p}{,}\PY{p}{]}
+        \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} s \PY{o}{=} \PY{k+kt}{matrix}\PY{p}{(}\PY{k+kt}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{,}\PY{l+m}{3}\PY{p}{,}\PY{l+m}{4}\PY{p}{,}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{,}\PY{l+m}{3}\PY{p}{,}\PY{l+m}{4}\PY{p}{,}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{,}\PY{l+m}{3}\PY{p}{,}\PY{l+m}{4}\PY{p}{)}\PY{p}{,}nrow \PY{o}{=} \PY{l+m}{4}\PY{p}{,}byrow \PY{o}{=} \PY{l+m}{1}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{k+kp}{rowSums}\PY{p}{(}s\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} s\PY{p}{[}\PY{p}{,}\PY{l+m}{3}\PY{p}{]} \PY{o}{=} \PY{l+m}{1}
+\end{Verbatim}
+
+    \section{Heavy lifting for 2.}\label{heavy-lifting-for-2.}
+
+This is where dirty things happen so that the inline code looks
+beautiful
+
+    This is the \texttt{wrapper} function used in exercise 2, it precomputes
+everything the equations need, and thus it greatly simplifies the
+calculations!
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} wrapper \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}\PY{k+kp}{expression}\PY{p}{)}\PY{p}{\PYZob{}}
+            \PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{,}
+                     phi \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}x\PY{p}{)}\PY{p}{\PYZob{}}\PY{k+kp}{exp}\PY{p}{(}x\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{l+m}{1}\PY{o}{+}\PY{k+kp}{exp}\PY{p}{(}x\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}\PY{p}{,}
+                     dphi \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}x\PY{p}{)}\PY{p}{\PYZob{}}\PY{k+kp}{exp}\PY{p}{(}x\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{l+m}{1}\PY{o}{+}\PY{k+kp}{exp}\PY{p}{(}x\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m}{2}\PY{p}{\PYZcb{}}\PY{p}{)}
+            \PY{p}{\PYZob{}}
+                psi \PY{o}{=} \PY{k+kp}{append}\PY{p}{(}psi\PY{p}{,}\PY{l+m}{10}\PY{p}{)}\PY{p}{;} \PY{c+c1}{\PYZsh{}add the \PYZsq{}infinity\PYZsq{}}
+                m \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}psi\PY{p}{)}\PY{p}{;}
+                M \PY{o}{=} compute\PYZus{}M\PY{p}{(}Y\PY{p}{,}m\PY{p}{)}\PY{p}{;}
+                l \PY{o}{=} linear\PYZus{}combination\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}\PY{p}{;}
+                
+                 phix \PY{o}{=} phi\PY{p}{(}l\PY{p}{)}\PY{p}{;}   phix\PY{p}{[}\PY{p}{,}m\PY{p}{]}\PY{o}{=}\PY{l+m}{1}\PY{p}{;} \PY{c+c1}{\PYZsh{}impose the \PYZsq{}infinity\PYZsq{}}
+                dphix \PY{o}{=} phi\PY{p}{(}l\PY{p}{)}\PY{p}{;}  dphix\PY{p}{[}\PY{p}{,}m\PY{p}{]}\PY{o}{=}\PY{l+m}{0}\PY{p}{;} \PY{c+c1}{\PYZsh{}impose the \PYZsq{}infinity\PYZsq{}}
+        
+                 \PY{c+c1}{\PYZsh{}this is where everything happens}
+                \PY{k+kp}{expression}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{,}M\PY{p}{,}phix\PY{p}{,}dphix\PY{p}{)}\PY{p}{;}
+            \PY{p}{\PYZcb{}}
+        \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+    In order for the code to run, we need the \texttt{compute\_M} function
+that creates the \texttt{M} matrix defined above:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} compute\PYZus{}M \PY{o}{=} \PY{k+kr}{function} \PY{p}{(}Y\PY{p}{,}m\PY{p}{)}\PY{p}{\PYZob{}}
+            
+            \PY{c+c1}{\PYZsh{}This is just a One Hot encoder:}
+            n \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}Y\PY{p}{)}
+            M1 \PY{o}{=} \PY{k+kp}{t}\PY{p}{(}\PY{k+kt}{matrix}\PY{p}{(}\PY{k+kp}{rep}\PY{p}{(}\PY{k+kt}{c}\PY{p}{(}\PY{l+m}{1}\PY{o}{:}m\PY{p}{)}\PY{p}{,}n\PY{p}{)}\PY{p}{,}m\PY{p}{)}\PY{p}{)}
+            M2 \PY{o}{=} \PY{k+kt}{matrix}\PY{p}{(}\PY{k+kp}{rep}\PY{p}{(}\PY{k+kt}{c}\PY{p}{(}Y\PY{p}{)}\PY{p}{,}m\PY{p}{)}\PY{p}{,}n\PY{p}{)}
+            M \PY{o}{=} \PY{p}{(}M1\PY{o}{==}M2\PY{p}{)}\PY{l+m}{+0}
+            
+            \PY{c+c1}{\PYZsh{}Create the matrix K}
+            K \PY{o}{=} \PY{k+kp}{diag}\PY{p}{(}m\PY{l+m}{+1}\PY{p}{)}
+            K \PY{o}{=} \PY{o}{\PYZhy{}}K\PY{p}{[}\PY{l+m}{1}\PY{o}{:}m\PY{p}{,}\PY{p}{]}\PY{o}{+}K\PY{p}{[}\PY{l+m}{2}\PY{o}{:}\PY{p}{(}m\PY{l+m}{+1}\PY{p}{)}\PY{p}{,}\PY{p}{]}
+            K \PY{o}{=} K\PY{p}{[}\PY{l+m}{1}\PY{o}{:}m\PY{p}{,}\PY{l+m}{1}\PY{o}{:}m\PY{l+m}{+1}\PY{p}{]}
+            
+            \PY{c+c1}{\PYZsh{}Return the product}
+            M\PY{o}{\PYZpc{}*\PYZpc{}}K
+        \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+    We also used - without declaration - a function ``linear combination'',
+that should return the linear combination inside the inverse link
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}13}]:} linear\PYZus{}combination \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}\PY{p}{\PYZob{}}
+             m \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}psi\PY{p}{)} \PY{c+c1}{\PYZsh{}possible results, from 1 to m.}
+             n \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}Y\PY{p}{)} \PY{c+c1}{\PYZsh{}number of observatons}
+             \PY{k+kr}{if}\PY{p}{(}\PY{k+kc}{TRUE}\PY{p}{)}\PY{p}{\PYZob{}}
+                 beta2 \PY{o}{=} \PY{k+kt}{matrix}\PY{p}{(}\PY{k+kp}{rep}\PY{p}{(}\PY{k+kp}{beta}\PY{p}{,}m\PY{p}{)}\PY{p}{,}ncol\PY{o}{=}m\PY{p}{,}byrow\PY{o}{=}\PY{l+m}{0}\PY{p}{)}
+             \PY{p}{\PYZcb{}}
+             \PY{k+kp}{else}\PY{p}{\PYZob{}}
+                 beta2 \PY{o}{=} \PY{k+kp}{beta}
+             \PY{p}{\PYZcb{}}
+             linear \PY{o}{=}  \PY{o}{\PYZhy{}} \PY{p}{(}X\PY{o}{\PYZpc{}*\PYZpc{}}beta2\PY{p}{)}
+             origin \PY{o}{=}  \PY{k+kt}{matrix}\PY{p}{(}\PY{k+kp}{rep}\PY{p}{(}psi\PY{p}{,}n\PY{p}{)} \PY{p}{,}nrow \PY{o}{=} n\PY{p}{,} byrow \PY{o}{=} \PY{l+m}{1}\PY{p}{)}
+             origin \PY{o}{+}  linear
+         \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} 
+\end{Verbatim}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
