@@ -114,7 +114,8 @@
     \def\gt{>}
     \def\lt{<}
     % Document parameters
-    \title{Pset3}
+    \title{Third problem set}
+    \author{Jaume de Dios Pont}
     
     
     
@@ -248,14 +249,30 @@
     
     
 
-    
-    \section{Table of Contents}\label{table-of-contents}
 
-{1~~}Question 1
 
-{2~~}Question 4
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{require}\PY{p}{(}reshape\PY{p}{)}
+        \PY{k+kn}{require}\PY{p}{(}ggplot2\PY{p}{)}
+        \PY{k+kn}{require}\PY{p}{(}MASS\PY{p}{)}
+        \PY{k+kn}{library}\PY{p}{(}censReg\PY{p}{)}
+\end{Verbatim}
 
-{3~~}Heavy lifting for 2.
+    \begin{Verbatim}[commandchars=\\\{\}]
+Loading required package: reshape
+Loading required package: ggplot2
+Loading required package: MASS
+Loading required package: maxLik
+Loading required package: miscTools
+
+Please cite the 'maxLik' package as:
+Henningsen, Arne and Toomet, Ott (2011). maxLik: A package for maximum likelihood estimation in R. Computational Statistics 26(3), 443-458. DOI 10.1007/s00180-010-0217-1.
+
+If you have questions, suggestions, or comments regarding the 'maxLik' package, please use a forum or 'tracker' at maxLik's R-Forge site:
+https://r-forge.r-project.org/projects/maxlik/
+    \end{Verbatim}
+
+    With the inestimable help of Alexander Chan
 
     \section{Question 1}\label{question-1}
 
@@ -266,9 +283,8 @@ includes the following variables for \(n=265\) observations:
 \begin{itemize}
 \tightlist
 \item
-  the outcome of interest -- a four-point scale in response to \emph{Do
-  you think the number of immigrants from foreign countries should be
-  increased or decreased?}
+  the outcome of interest -- a four-point scale in response to
+  \emph{Do you think the number of immigrants from foreign countries should be increased or decreased?}
 \item
   tone of the story treatment (positive or negative)
 \item
@@ -289,10 +305,7 @@ and \(i = 1,...,n\) where \(\psi_4=\infty\) and
 
     \textbf{a) (5pt)} Write down the likelihood function.
 
-    \emph{To simplify the notation, the indexs} \(i,j,k\) \emph{are used
-consistently,} \(i\) \emph{to iterate over the number of
-observations,}\(j\) \emph{to iterate over the number of outcomes, and}
-\(k\) * to iterate over the predictors.*
+    \emph{To simplify the notation, the indices* $i,j,k$ *are used consistently,* $i$ *to iterate over the number of observations,*$j$ *to iterate over the number of outcomes, and* $k$ * to iterate over the predictors.}
 
 The log-likelihood can be easily seen to be:
 
@@ -329,9 +342,29 @@ where
 
 And \(M\) is the OneHot matrix for the \(Y_i\), i.e.~a matrix that has
 \(n\) rows, and each row is the row vector with zeros everywhere but at
-the position \(j\), where the the observed \(Y\) is \(Y_j\).
+the position \(j\), where the the observed \(Y\) is \(Y_j\).\\
+Below, there is a function that computes \(\tilde M\) in R:
 
-In practice, however, we are interested in the log-likelihood, which is:
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} compute\PYZus{}M \PY{o}{=} \PY{k+kr}{function} \PY{p}{(}Y\PY{p}{,}m\PY{p}{)}\PY{p}{\PYZob{}}
+            
+            \PY{c+c1}{\PYZsh{}This is just a One Hot encoder:}
+            n \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}Y\PY{p}{)}
+            M1 \PY{o}{=} \PY{k+kp}{t}\PY{p}{(}\PY{k+kt}{matrix}\PY{p}{(}\PY{k+kp}{rep}\PY{p}{(}\PY{k+kt}{c}\PY{p}{(}\PY{l+m}{1}\PY{o}{:}m\PY{p}{)}\PY{p}{,}n\PY{p}{)}\PY{p}{,}m\PY{p}{)}\PY{p}{)}
+            M2 \PY{o}{=} \PY{k+kt}{matrix}\PY{p}{(}\PY{k+kp}{rep}\PY{p}{(}\PY{k+kt}{c}\PY{p}{(}Y\PY{p}{)}\PY{p}{,}m\PY{p}{)}\PY{p}{,}n\PY{p}{)}
+            M \PY{o}{=} \PY{p}{(}M1\PY{o}{==}M2\PY{p}{)}\PY{l+m}{+0}
+            
+            \PY{c+c1}{\PYZsh{}Create the matrix K}
+            K \PY{o}{=} \PY{k+kp}{diag}\PY{p}{(}m\PY{l+m}{+1}\PY{p}{)}
+            K \PY{o}{=} \PY{o}{\PYZhy{}}K\PY{p}{[}\PY{l+m}{1}\PY{o}{:}m\PY{p}{,}\PY{p}{]}\PY{o}{+}K\PY{p}{[}\PY{l+m}{2}\PY{o}{:}\PY{p}{(}m\PY{l+m}{+1}\PY{p}{)}\PY{p}{,}\PY{p}{]}
+            K \PY{o}{=} K\PY{p}{[}\PY{l+m}{1}\PY{o}{:}m\PY{p}{,}\PY{l+m}{1}\PY{o}{:}m\PY{l+m}{+1}\PY{p}{]}
+            
+            \PY{c+c1}{\PYZsh{}Return the product}
+            M\PY{o}{\PYZpc{}*\PYZpc{}}K
+        \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+    In practice, however, we are interested in the log-likelihood, which is:
 
 \[
 L = \sum_{i=1}^n \log \sum_{j=1}^4
@@ -339,11 +372,48 @@ L = \sum_{i=1}^n \log \sum_{j=1}^4
 \phi\left(\psi_{j} - \sum_{k=1}^m X_{ik}\beta_k\right)
 \]
 
-Warning: We will use a great deal of abstraction because the functions
-are a mess otherwise, here we go:
+The notation is further simplified if we pre-comute the
+\(\phi\left(\psi_{j} - \sum_{k=1}^m X_{ik}\beta_k\right)\) as
+\(\phi_{ij}'\) (and the same for \(\phi_{ij}'\).
+
+Below there is a wrapper in \texttt{R} that automatically defines these
+quantities for our function, so that we can use them :
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}6}]:} log\PYZus{}likelihood \PY{o}{=} wrapper\PY{p}{(}
+{\color{incolor}In [{\color{incolor}3}]:} wrapper \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}\PY{k+kp}{expression}\PY{p}{)}\PY{p}{\PYZob{}}
+            \PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{,}
+                     phi \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}x\PY{p}{)}\PY{p}{\PYZob{}}\PY{k+kp}{exp}\PY{p}{(}x\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{l+m}{1}\PY{o}{+}\PY{k+kp}{exp}\PY{p}{(}x\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}\PY{p}{,}
+                     dphi \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}x\PY{p}{)}\PY{p}{\PYZob{}}\PY{k+kp}{exp}\PY{p}{(}x\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{l+m}{1}\PY{o}{+}\PY{k+kp}{exp}\PY{p}{(}x\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m}{2}\PY{p}{\PYZcb{}}\PY{p}{)}
+            \PY{p}{\PYZob{}}
+                psi \PY{o}{=} \PY{k+kp}{append}\PY{p}{(}psi\PY{p}{,}\PY{l+m}{10}\PY{p}{)}\PY{p}{;} \PY{c+c1}{\PYZsh{}add the \PYZsq{}infinity\PYZsq{}}
+                m \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}psi\PY{p}{)}\PY{p}{;} \PY{c+c1}{\PYZsh{}number of outcomes}
+                n \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}Y\PY{p}{)} \PY{c+c1}{\PYZsh{}number of observatons}
+                M \PY{o}{=} compute\PYZus{}M\PY{p}{(}Y\PY{p}{,}m\PY{p}{)}\PY{p}{;}
+                
+                \PY{c+c1}{\PYZsh{} transform beta\PYZus{}j to beta\PYZus{}jk (as in part d)}
+                \PY{c+c1}{\PYZsh{} whenever necessary}
+                \PY{k+kr}{if}\PY{p}{(}\PY{k+kp}{length}\PY{p}{(}\PY{k+kp}{beta}\PY{p}{)} \PY{o}{==} \PY{k+kp}{ncol}\PY{p}{(}X\PY{p}{)}\PY{p}{)}
+                    beta2 \PY{o}{=} \PY{k+kt}{matrix}\PY{p}{(}\PY{k+kp}{rep}\PY{p}{(}\PY{k+kp}{beta}\PY{p}{,}m\PY{p}{)}\PY{p}{,}ncol\PY{o}{=}m\PY{p}{,}byrow\PY{o}{=}\PY{l+m}{0}\PY{p}{)}
+                \PY{k+kr}{else} beta2 \PY{o}{=} \PY{k+kp}{beta}
+                    
+                \PY{c+c1}{\PYZsh{}Compute the linear combination inside `psi`}
+                linear \PY{o}{=}  \PY{o}{\PYZhy{}} \PY{p}{(}X\PY{o}{\PYZpc{}*\PYZpc{}}beta2\PY{p}{)}
+                origin \PY{o}{=}  \PY{k+kt}{matrix}\PY{p}{(}\PY{k+kp}{rep}\PY{p}{(}psi\PY{p}{,}n\PY{p}{)} \PY{p}{,}nrow \PY{o}{=} n\PY{p}{,} byrow \PY{o}{=} \PY{l+m}{1}\PY{p}{)}
+                l \PY{o}{=} origin \PY{o}{+}  linear
+                
+                 phix \PY{o}{=} phi\PY{p}{(}l\PY{p}{)}\PY{p}{;}   phix\PY{p}{[}\PY{p}{,}m\PY{p}{]}\PY{o}{=}\PY{l+m}{1}\PY{p}{;} \PY{c+c1}{\PYZsh{}impose the \PYZsq{}infinity\PYZsq{}}
+                dphix \PY{o}{=} phi\PY{p}{(}l\PY{p}{)}\PY{p}{;}  dphix\PY{p}{[}\PY{p}{,}m\PY{p}{]}\PY{o}{=}\PY{l+m}{0}\PY{p}{;} \PY{c+c1}{\PYZsh{}impose the \PYZsq{}infinity\PYZsq{}}
+        
+                \PY{k+kp}{expression}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{,}M\PY{p}{,}phix\PY{p}{,}dphix\PY{p}{)}\PY{p}{;}
+            \PY{p}{\PYZcb{}}
+        \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+    Now we are ready to define the log-likelihood function immediately using
+the abstraction wrapper:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} log\PYZus{}likelihood \PY{o}{=} wrapper\PY{p}{(}
             \PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{,}M\PY{p}{,}phi\PY{p}{,}dphi\PY{p}{)}\PY{p}{\PYZob{}}
                 \PY{k+kp}{sum}\PY{p}{(}\PY{k+kp}{log}\PY{p}{(}\PY{k+kp}{rowSums}\PY{p}{(}M\PY{o}{*}phi\PY{p}{)}\PY{p}{)}\PY{p}{)}
             \PY{p}{\PYZcb{}}
@@ -389,7 +459,7 @@ easily:
 in \texttt{R} that is:
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}7}]:} beta\PYZus{}score \PY{o}{=}  wrapper\PY{p}{(}
+{\color{incolor}In [{\color{incolor}5}]:} beta\PYZus{}score \PY{o}{=}  wrapper\PY{p}{(}
             \PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{,}M\PY{p}{,}phi\PY{p}{,}dphi\PY{p}{)}\PY{p}{\PYZob{}}
                 \PY{o}{\PYZhy{}}\PY{p}{(}\PY{k+kp}{rowSums}\PY{p}{(}M\PY{o}{*}dphi\PY{p}{)}\PY{o}{/}\PY{k+kp}{rowSums}\PY{p}{(}M\PY{o}{*}phi\PY{p}{)}\PY{p}{)}\PY{o}{\PYZpc{}*\PYZpc{}}X
             \PY{p}{\PYZcb{}}
@@ -407,12 +477,12 @@ in \texttt{R} that is:
 which in \texttt{R} can be written as:
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}95}]:} psi\PYZus{}score \PY{o}{=}  wrapper\PY{p}{(}
-             \PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{,}M\PY{p}{,}phi\PY{p}{,}dphi\PY{p}{)}\PY{p}{\PYZob{}}
-                 r \PY{o}{=} \PY{p}{(}\PY{k+kp}{rowSums}\PY{p}{(}M\PY{o}{*}phi\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m}{\PYZhy{}1}\PY{o}{\PYZpc{}*\PYZpc{}}\PY{p}{(}M\PY{o}{*}dphi\PY{p}{)}\PY{p}{)}
-                 r\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{p}{(}\PY{k+kp}{length}\PY{p}{(}r\PY{p}{)}\PY{l+m}{\PYZhy{}1}\PY{p}{)}\PY{p}{]}
-             \PY{p}{\PYZcb{}}
-         \PY{p}{)}
+{\color{incolor}In [{\color{incolor}6}]:} psi\PYZus{}score \PY{o}{=}  wrapper\PY{p}{(}
+            \PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{,}M\PY{p}{,}phi\PY{p}{,}dphi\PY{p}{)}\PY{p}{\PYZob{}}
+                r \PY{o}{=} \PY{p}{(}\PY{k+kp}{rowSums}\PY{p}{(}M\PY{o}{*}phi\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m}{\PYZhy{}1}\PY{o}{\PYZpc{}*\PYZpc{}}\PY{p}{(}M\PY{o}{*}dphi\PY{p}{)}\PY{p}{)}
+                r\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{p}{(}\PY{k+kp}{length}\PY{p}{(}r\PY{p}{)}\PY{l+m}{\PYZhy{}1}\PY{p}{)}\PY{p}{]}
+            \PY{p}{\PYZcb{}}
+        \PY{p}{)}
 \end{Verbatim}
 
     (10pt) Using (a) and (b), calculate the maximum likelihood estimates of
@@ -423,85 +493,63 @@ outputs from the \texttt{polr} function in the \texttt{MASS} package.
     Load the data:
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}96}]:} brader \PY{o}{=} read.csv\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Data/brader.csv\PYZsq{}}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}7}]:} brader \PY{o}{=} read.csv\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Data/brader.csv\PYZsq{}}\PY{p}{)}
 \end{Verbatim}
 
     Prepare a Handler function for \texttt{optim}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}104}]:} likelihood\PYZus{}handler \PY{o}{=} \PY{k+kr}{function} \PY{p}{(}x\PY{p}{,}data\PY{p}{)}\PY{p}{\PYZob{}}
-              X \PY{o}{=} data\PY{p}{[[}\PY{l+m}{1}\PY{p}{]]}
-              Y \PY{o}{=} data\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}
-              o \PY{o}{=} \PY{k+kp}{ncol}\PY{p}{(}X\PY{p}{)}
-              beta \PY{o}{=} x\PY{p}{[}\PY{l+m}{1}\PY{o}{:}o\PY{p}{]}
-              psi \PY{o}{=} x\PY{p}{[}\PY{p}{(}o\PY{l+m}{+1}\PY{p}{)}\PY{o}{:}\PY{k+kp}{length}\PY{p}{(}x\PY{p}{)}\PY{p}{]}
-              l \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}psi\PY{p}{)}
-              diff\PYZus{}psi \PY{o}{=} psi\PY{p}{[}\PY{l+m}{2}\PY{o}{:}l\PY{p}{]}\PY{o}{\PYZhy{}}psi\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{p}{(}l\PY{l+m}{\PYZhy{}1}\PY{p}{)}\PY{p}{]}
-              \PY{k+kr}{if}\PY{p}{(}\PY{k+kp}{min}\PY{p}{(}diff\PYZus{}psi\PY{p}{)}\PY{o}{\PYZlt{}=}\PY{l+m}{0}\PY{p}{)}
-                  \PY{k+kr}{return} \PY{p}{(}\PY{l+m}{1E5}\PY{p}{)}
-              \PY{k+kr}{return}\PY{p}{(}\PY{o}{\PYZhy{}}log\PYZus{}likelihood\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}\PY{p}{)}
-          \PY{p}{\PYZcb{}}
+{\color{incolor}In [{\color{incolor}8}]:} likelihood\PYZus{}handler \PY{o}{=} \PY{k+kr}{function} \PY{p}{(}x\PY{p}{,}data\PY{p}{)}\PY{p}{\PYZob{}}
+            X \PY{o}{=} data\PY{p}{[[}\PY{l+m}{1}\PY{p}{]]}
+            Y \PY{o}{=} data\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}
+            o \PY{o}{=} \PY{k+kp}{ncol}\PY{p}{(}X\PY{p}{)}
+            beta \PY{o}{=} x\PY{p}{[}\PY{l+m}{1}\PY{o}{:}o\PY{p}{]}
+            psi \PY{o}{=} x\PY{p}{[}\PY{p}{(}o\PY{l+m}{+1}\PY{p}{)}\PY{o}{:}\PY{k+kp}{length}\PY{p}{(}x\PY{p}{)}\PY{p}{]}
+            l \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}psi\PY{p}{)}
+            diff\PYZus{}psi \PY{o}{=} psi\PY{p}{[}\PY{l+m}{2}\PY{o}{:}l\PY{p}{]}\PY{o}{\PYZhy{}}psi\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{p}{(}l\PY{l+m}{\PYZhy{}1}\PY{p}{)}\PY{p}{]}
+            \PY{k+kr}{if}\PY{p}{(}\PY{k+kp}{min}\PY{p}{(}diff\PYZus{}psi\PY{p}{)}\PY{o}{\PYZlt{}=}\PY{l+m}{0}\PY{p}{)}
+                \PY{k+kr}{return} \PY{p}{(}\PY{l+m}{1E5}\PY{p}{)}
+                
+                
+            \PY{k+kr}{return}\PY{p}{(}\PY{o}{\PYZhy{}}log\PYZus{}likelihood\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}\PY{p}{)}
+        \PY{p}{\PYZcb{}}
 \end{Verbatim}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}114}]:} gradient\PYZus{}handler \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}x\PY{p}{,}data\PY{p}{)}\PY{p}{\PYZob{}}
-              X \PY{o}{=} data\PY{p}{[[}\PY{l+m}{1}\PY{p}{]]}
-              Y \PY{o}{=} data\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}
-              o \PY{o}{=} \PY{k+kp}{ncol}\PY{p}{(}X\PY{p}{)}
-              beta \PY{o}{=} x\PY{p}{[}\PY{l+m}{1}\PY{o}{:}o\PY{p}{]}
-              psi \PY{o}{=} x\PY{p}{[}\PY{p}{(}o\PY{l+m}{+1}\PY{p}{)}\PY{o}{:}\PY{k+kp}{length}\PY{p}{(}x\PY{p}{)}\PY{p}{]}
-              l \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}psi\PY{p}{)}
-              diff\PYZus{}psi \PY{o}{=} psi\PY{p}{[}\PY{l+m}{2}\PY{o}{:}l\PY{p}{]}\PY{o}{\PYZhy{}}psi\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{p}{(}l\PY{l+m}{\PYZhy{}1}\PY{p}{)}\PY{p}{]}
-              \PY{k+kr}{if}\PY{p}{(}\PY{k+kp}{min}\PY{p}{(}diff\PYZus{}psi\PY{p}{)}\PY{o}{\PYZlt{}=}\PY{l+m}{0}\PY{p}{)}
-                  \PY{k+kr}{return}\PY{p}{(}x\PY{o}{*}\PY{l+m}{0}\PY{p}{)}\PY{p}{;}
-              sbeta \PY{o}{=} \PY{p}{(}\PY{o}{\PYZhy{}}beta\PYZus{}score\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}\PY{p}{)} 
-              spsi  \PY{o}{=} \PY{p}{(}\PY{o}{\PYZhy{}}psi\PYZus{}score\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}\PY{p}{)} 
-              \PY{k+kp}{append}\PY{p}{(}sbeta\PY{p}{,}spsi\PY{p}{)}
-          \PY{p}{\PYZcb{}}
+{\color{incolor}In [{\color{incolor}9}]:} gradient\PYZus{}handler \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}x\PY{p}{,}data\PY{p}{)}\PY{p}{\PYZob{}}
+            X \PY{o}{=} data\PY{p}{[[}\PY{l+m}{1}\PY{p}{]]}
+            Y \PY{o}{=} data\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}
+            o \PY{o}{=} \PY{k+kp}{ncol}\PY{p}{(}X\PY{p}{)}
+            beta \PY{o}{=} x\PY{p}{[}\PY{l+m}{1}\PY{o}{:}o\PY{p}{]}
+            psi \PY{o}{=} x\PY{p}{[}\PY{p}{(}o\PY{l+m}{+1}\PY{p}{)}\PY{o}{:}\PY{k+kp}{length}\PY{p}{(}x\PY{p}{)}\PY{p}{]}
+            l \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}psi\PY{p}{)}
+            diff\PYZus{}psi \PY{o}{=} psi\PY{p}{[}\PY{l+m}{2}\PY{o}{:}l\PY{p}{]}\PY{o}{\PYZhy{}}psi\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{p}{(}l\PY{l+m}{\PYZhy{}1}\PY{p}{)}\PY{p}{]}
+            \PY{k+kr}{if}\PY{p}{(}\PY{k+kp}{min}\PY{p}{(}diff\PYZus{}psi\PY{p}{)}\PY{o}{\PYZlt{}=}\PY{l+m}{0}\PY{p}{)}
+                \PY{k+kr}{return}\PY{p}{(}x\PY{o}{*}\PY{l+m}{0}\PY{p}{)}\PY{p}{;}
+            sbeta \PY{o}{=} \PY{p}{(}\PY{o}{\PYZhy{}}beta\PYZus{}score\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}\PY{p}{)} 
+            spsi  \PY{o}{=} \PY{p}{(}\PY{o}{\PYZhy{}}psi\PYZus{}score\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}\PY{p}{)} 
+            \PY{k+kr}{return}\PY{p}{(}\PY{k+kp}{append}\PY{p}{(}sbeta\PY{p}{,}spsi\PY{p}{)}\PY{p}{)}
+        \PY{p}{\PYZcb{}}
 \end{Verbatim}
 
     Then we prepare the data as our function needs it
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}111}]:} Y \PY{o}{=} brader\PY{o}{\PYZdl{}}immigr
-          X \PY{o}{=} \PY{k+kp}{data.matrix}\PY{p}{(}brader\PY{p}{)}\PY{p}{[}\PY{p}{,}\PY{l+m}{2}\PY{o}{:}\PY{l+m}{5}\PY{p}{]}
-          data \PY{o}{=} \PY{k+kt}{list}\PY{p}{(}X\PY{p}{,}Y\PY{p}{)}
-          beta \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}\PY{l+m}{0.5}\PY{p}{,} \PY{l+m}{0}\PY{p}{,} \PY{l+m}{0}\PY{p}{,} \PY{l+m}{0}\PY{p}{)}
-          psi \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}\PY{l+m}{\PYZhy{}1}\PY{p}{,} \PY{l+m}{0}\PY{p}{,} \PY{l+m}{1}\PY{p}{)}
-          betapsi \PY{o}{=} \PY{k+kp}{append}\PY{p}{(}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}
-          betapsi
+{\color{incolor}In [{\color{incolor}10}]:} Y \PY{o}{=} brader\PY{o}{\PYZdl{}}immigr
+         X \PY{o}{=} \PY{k+kp}{data.matrix}\PY{p}{(}brader\PY{p}{)}\PY{p}{[}\PY{p}{,}\PY{l+m}{2}\PY{o}{:}\PY{l+m}{5}\PY{p}{]}
+         data \PY{o}{=} \PY{k+kt}{list}\PY{p}{(}X\PY{p}{,}Y\PY{p}{)}
+         beta \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}\PY{l+m}{0.5}\PY{p}{,} \PY{l+m}{0}\PY{p}{,} \PY{l+m}{0}\PY{p}{,} \PY{l+m}{0}\PY{p}{)}
+         psi \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}\PY{l+m}{\PYZhy{}1}\PY{p}{,} \PY{l+m}{0}\PY{p}{,} \PY{l+m}{1}\PY{p}{)}
+         betapsi \PY{o}{=} \PY{k+kp}{append}\PY{p}{(}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}
 \end{Verbatim}
 
-    \begin{enumerate*}
-\item 0.5
-\item 0
-\item 0
-\item 0
-\item -1
-\item 0
-\item 1
-\end{enumerate*}
-
-    
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}112}]:} psi\PYZus{}score\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}
-\end{Verbatim}
-
-    \begin{enumerate*}
-\item -48.8333052835874
-\item -6.56482749873738
-\item -11.6548684369225
-\end{enumerate*}
-
-    
     And we run the optimization
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}113}]:} r \PY{o}{=} optim\PY{p}{(}betapsi\PY{p}{,}likelihood\PYZus{}handler\PY{p}{,} gr \PY{o}{=} gradient\PYZus{}handler\PY{p}{,} data \PY{o}{=} data\PY{p}{,}
-                    hessian \PY{o}{=} \PY{l+m}{1}\PY{p}{,} control \PY{o}{=} \PY{p}{(}reltol \PY{o}{=} \PY{l+m}{1E\PYZhy{}12}\PY{p}{)}\PY{p}{)}
-          r\PY{o}{\PYZdl{}}par\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{4}\PY{p}{]}
-          r\PY{o}{\PYZdl{}}par\PY{p}{[}\PY{l+m}{5}\PY{o}{:}\PY{l+m}{7}\PY{p}{]}
-          \PY{o}{\PYZhy{}}log\PYZus{}likelihood\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}r\PY{o}{\PYZdl{}}par\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{4}\PY{p}{]}\PY{p}{,}r\PY{o}{\PYZdl{}}par\PY{p}{[}\PY{l+m}{5}\PY{o}{:}\PY{l+m}{7}\PY{p}{]}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}11}]:} r \PY{o}{=} optim\PY{p}{(}betapsi\PY{p}{,}likelihood\PYZus{}handler\PY{p}{,} gr \PY{o}{=} gradient\PYZus{}handler\PY{p}{,} data \PY{o}{=} data\PY{p}{,}
+                   hessian \PY{o}{=} \PY{l+m}{1}\PY{p}{,} control \PY{o}{=} \PY{p}{(}reltol \PY{o}{=} \PY{l+m}{1E\PYZhy{}12}\PY{p}{)}\PY{p}{)}
+         r\PY{o}{\PYZdl{}}par
+         r\PY{o}{\PYZdl{}}value
 \end{Verbatim}
 
     \begin{enumerate*}
@@ -509,10 +557,6 @@ outputs from the \texttt{polr} function in the \texttt{MASS} package.
 \item 0.182514633025783
 \item 0.00954246157357417
 \item 0.00453801085115179
-\end{enumerate*}
-
-    
-    \begin{enumerate*}
 \item -1.64987523554466
 \item 0.153712692971585
 \item 1.37459144576628
@@ -522,8 +566,25 @@ outputs from the \texttt{polr} function in the \texttt{MASS} package.
     325.94791194349
 
     
+    Standard Errors:
+
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}31}]:} \PY{k+kn}{library}\PY{p}{(}MASS\PY{p}{)}
+{\color{incolor}In [{\color{incolor}12}]:} \PY{k+kp}{diag}\PY{p}{(}\PY{k+kp}{solve}\PY{p}{(}r\PY{o}{\PYZdl{}}hessian\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m}{.5}
+\end{Verbatim}
+
+    \begin{enumerate*}
+\item 0.162040401841744
+\item 0.160164676752734
+\item 0.00530840672161387
+\item 0.0230051608556128
+\item 0.430797558900244
+\item 0.381474494066442
+\item 0.370321674525004
+\end{enumerate*}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}13}]:} \PY{k+kn}{library}\PY{p}{(}MASS\PY{p}{)}
          
          plr \PY{o}{\PYZlt{}\PYZhy{}} polr\PY{p}{(} \PY{k+kp}{factor}\PY{p}{(}immigr\PY{p}{)} \PY{o}{\PYZti{}} tone \PY{o}{+} eth \PY{o}{+} ppage \PY{o}{+} ppincimp\PY{p}{,} 
                             data \PY{o}{=} brader\PY{p}{,} method \PY{o}{=} \PY{l+s}{\PYZdq{}}\PY{l+s}{logistic\PYZdq{}}\PY{p}{,} Hess \PY{o}{=} \PY{l+m}{1}\PY{p}{)}
@@ -597,7 +658,7 @@ easily:
 in this case we must modify the function, to create a new function:
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}69}]:} extra\PYZus{}beta\PYZus{}score \PY{o}{=} wrapper\PY{p}{(}
+{\color{incolor}In [{\color{incolor}14}]:} extra\PYZus{}beta\PYZus{}score \PY{o}{=} wrapper\PY{p}{(}
              \PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{,}M\PY{p}{,}phi\PY{p}{,}dphi\PY{p}{)}\PY{p}{\PYZob{}}
                  \PY{c+c1}{\PYZsh{}this corresponds to a matrix that has the same elements in every}
                  \PY{c+c1}{\PYZsh{}row, and are the (sum **)\PYZca{}\PYZob{}\PYZhy{}1\PYZcb{} in the formula above}
@@ -616,6 +677,412 @@ in this case we must modify the function, to create a new function:
 \]
 
 As for the likelihood, the same function does the job
+
+    Now the code: Create the initial conditions from the optimization in the
+previous case:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}15}]:} beta0 \PY{o}{=} \PY{k+kp}{rep}\PY{p}{(}plr\PY{o}{\PYZdl{}}coefficients \PY{p}{,} \PY{l+m}{4}\PY{p}{)}
+         psi0 \PY{o}{=} plr\PY{o}{\PYZdl{}}zeta
+         betapsi0 \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}beta0\PY{p}{,}psi0\PY{p}{)}
+\end{Verbatim}
+
+    create a new likelihood handler
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}16}]:} extra\PYZus{}likelihood\PYZus{}handler \PY{o}{=} \PY{k+kr}{function} \PY{p}{(}x\PY{p}{,}data\PY{p}{)}\PY{p}{\PYZob{}}
+             X \PY{o}{=} data\PY{p}{[[}\PY{l+m}{1}\PY{p}{]]}
+             Y \PY{o}{=} data\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}
+             o \PY{o}{=} \PY{k+kp}{ncol}\PY{p}{(}X\PY{p}{)}
+             beta \PY{o}{=} \PY{k+kt}{matrix}\PY{p}{(}x\PY{p}{[}\PY{l+m}{1}\PY{o}{:}o\PY{o}{*}\PY{l+m}{4}\PY{p}{]}\PY{p}{,}ncol\PY{o}{=}\PY{l+m}{4}\PY{p}{,} byrow \PY{o}{=} \PY{l+m}{0}\PY{p}{)}
+             psi \PY{o}{=} x\PY{p}{[}\PY{p}{(}o\PY{o}{*}\PY{l+m}{4}\PY{l+m}{+1}\PY{p}{)}\PY{o}{:}\PY{k+kp}{length}\PY{p}{(}x\PY{p}{)}\PY{p}{]}
+             l \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}psi\PY{p}{)}
+             diff\PYZus{}psi \PY{o}{=} psi\PY{p}{[}\PY{l+m}{2}\PY{o}{:}l\PY{p}{]}\PY{o}{\PYZhy{}}psi\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{p}{(}l\PY{l+m}{\PYZhy{}1}\PY{p}{)}\PY{p}{]}
+             \PY{k+kr}{if}\PY{p}{(}\PY{k+kp}{min}\PY{p}{(}diff\PYZus{}psi\PY{p}{)}\PY{o}{\PYZlt{}=}\PY{l+m}{0}\PY{p}{)}
+                 \PY{k+kr}{return} \PY{p}{(}\PY{l+m}{1E5}\PY{p}{)}
+                 
+                 
+             \PY{k+kr}{return}\PY{p}{(}\PY{o}{\PYZhy{}}log\PYZus{}likelihood\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}\PY{p}{)}
+         \PY{p}{\PYZcb{}}
+             
+         r \PY{o}{=} optim\PY{p}{(}betapsi0\PY{p}{,}extra\PYZus{}likelihood\PYZus{}handler\PY{p}{,}  data \PY{o}{=} data\PY{p}{,}
+                   hessian \PY{o}{=} \PY{l+m}{1}\PY{p}{,} control \PY{o}{=} \PY{p}{(}reltol \PY{o}{=} \PY{l+m}{1E\PYZhy{}12}\PY{p}{)}\PY{p}{)}
+         
+         \PY{k+kt}{matrix}\PY{p}{(}r\PY{o}{\PYZdl{}}par\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{16}\PY{p}{]}\PY{p}{,}byrow\PY{o}{=}\PY{l+m}{0}\PY{p}{,}ncol\PY{o}{=}\PY{l+m}{4}\PY{p}{)}
+         r\PY{o}{\PYZdl{}}par\PY{p}{[}\PY{l+m}{17}\PY{o}{:}\PY{l+m}{19}\PY{p}{]}
+\end{Verbatim}
+
+    \begin{tabular}{llll}
+      0.6943061   &  0.63885579  & 0.72700705   &  0.835971250\\
+     -0.3021024   &  0.14222286  & 0.10165316   & -0.060505633\\
+     -0.1915581   & -0.02427104  & 0.93475166   & -0.377267011\\
+      0.7014210   & -0.03038976  & 0.01123405   &  0.007652073\\
+\end{tabular}
+
+    
+    \begin{description*}
+\item[1\textbackslash{}textbar\{\}2] -1.66549494997964
+\item[2\textbackslash{}textbar\{\}3] 0.152774935941614
+\item[3\textbackslash{}textbar\{\}4] 1.36057070649973
+\end{description*}
+
+    
+    \section{Question 2}\label{question-2}
+
+    (30 pt.) Understanding the basics of maximum likelihood makes it easier
+to learn a wide range of models. Here you will learn about a model not
+covered in class. The \{\it tobit model\} is often used to model a
+censored outcome variable, where we only observe values of the outcome
+above a certain threshold \(\tau\) while values below that threshold
+take on a single value, say 0. A classic example is labor market
+participation: you only observe a worker's wage if their potential
+earnings is high enough to be over minimium wage or otherwise
+employable.
+
+Consider the case where \(\tau=0\). In this case, the model can be
+written as follows.
+
+\begin{eqnarray*}
+    Y_i & = & \left\{ \begin{array}{ll}
+                    Y_i^\ast & {\rm if} \quad Y_i^\ast > 0 \\
+                    0 & {\rm if} \quad Y_i^\ast \le 0 \end{array} \right.
+                    \quad {\rm where} \quad Y_i^\ast = X_i^\top \beta + \epsilon_i,
+  \end{eqnarray*}
+
+where \(\epsilon_i \sim \mathcal{N}(0, \sigma^2)\). Note that \(Y_i\) is
+the observed outcome variable and \(Y_i^\ast\) is the underlying latent
+variable, which is not (always) observable.
+
+    \textbf{a.}(10pt) Derive the likelihood and log-likelihood functions of
+the model for a simple random sample of size \(N\).
+
+    We will (for a moment) forget that log-likelihood is in fact terribly
+ill posed for variables that are a mixture of a continuous and a
+discrete variable, and proceed as if we didn't know that:
+
+We have that:
+
+\[
+P(Y^*_k > 0) = P(Y_k > 0) = \Phi\left(\frac{x^T\beta}{\sigma}\right)
+\]
+
+Moreover, when \(Y_k>0\) \[
+\rho(Y^*_k|Y^*_k>0) = \rho(Y_k|Y_k>0) = (P(Y_k>0))^{-1} \phi\left (\frac{x^T\beta-Y_k}{\sigma}\right )
+\]
+
+For the other case we have:
+
+\[
+P(Y_k = 0) = P(Y^*_k < 0) = 1-\Phi\left(\frac{x^T\beta}{\sigma}\right)
+\]
+
+Therefore the likelihood is
+
+\[
+L(Y_i) = 
+\left\{
+\begin{array}{lr}
+        1-\Phi\left(\frac{X_i^T\beta}{\sigma}\right), &  Y = 0\\
+        \phi\left (\frac{X_i^T\beta-Y_i}{\sigma}\right ), & Y > 0 \\
+\end{array}
+\right.
+\]
+
+We will pretend what we did above is right for the sake of the exercise,
+but a careful second look shows that we have brutally mixed
+probabilities and probability densities in an almost non-sensical way.
+Moreover note that the density is not even continuous, so any attempt to
+apply any of the theorems done at class is not justified (at least in
+the way we did them at class).
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}17}]:} tobit\PYZus{}log\PYZus{}likelihood \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}sigma\PY{p}{)}\PY{p}{\PYZob{}}
+             x \PY{o}{=} X\PY{o}{\PYZpc{}*\PYZpc{}}\PY{k+kp}{beta}\PY{o}{/}sigma
+             PN \PY{o}{=} \PY{l+m}{1}\PY{o}{\PYZhy{}}pnorm\PY{p}{(}x\PY{p}{)}
+             PP \PY{o}{=}  dnorm\PY{p}{(}x\PY{p}{)}
+             PF \PY{o}{=} PN\PY{p}{;}
+             PF\PY{p}{[}Y\PY{o}{\PYZgt{}}\PY{l+m}{0}\PY{p}{]} \PY{o}{=} PP
+             \PY{k+kp}{sum}\PY{p}{(}\PY{k+kp}{log}\PY{p}{(}PF\PY{p}{)}\PY{p}{)}
+         \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+    \textbf{b.} (10pt) A natural quantity of interest for this model is the
+expected value of the outcome variable conditional on a set of predictor
+levels, i.e., \(E(Y_i \mid X_i=x)\). Prove that the exact expression for
+this quantity is the following.
+
+\begin{equation*}
+    E(Y_i \mid X_i=x) =  \Phi\left(\frac{x^\top \beta}{\sigma}\right)x^\top\beta + \sigma \phi\left(\frac{x^\top \beta}{\sigma}\right),
+  \end{equation*}
+
+where \(\phi(\cdot)\) and \(\Phi(\cdot)\) denote the PDF and CDF of a
+standard normal random variable, respectively. \textbackslash{}
+\{\bf Hint:\} You may find the following property of the standard normal
+PDF helpful: \(\partial\phi(z)/\partial z = -z\cdot \phi(z)\).
+
+    The expectation can be computed as the following integral:
+
+\[
+E(Y_i) =\int_{0}^\infty  \frac{d}{dy} \Phi\left (\frac{X_i^T\beta-y}{\sigma}\right ) y dy 
+\]
+
+Where we neglected the case where \(Y_i=0\)
+
+In order to compute it, we will perform a change of variables, with
+\(z = \frac{X_i^T\beta-y}{\sigma}\)
+
+\begin{align*}
+E(Y_i)=
+\int_{-\infty}^{\frac{X_i^T\beta}{\sigma}}
+      \frac{d}{dz} \Phi\left (z\right ) (X_i^T\beta - z\sigma)dy = &
+%
+%
+\Phi\left(\frac{X_i^T\beta}{\sigma}\right)X_i^T\beta 
++ \sigma \int_{-\infty}^{\frac{X_i^T\beta}{\sigma}} -z \frac{d}{dz} \Phi(z) dz = \\ = &
+\Phi\left(\frac{X_i^T\beta}{\sigma}\right)X_i^T\beta 
++ \sigma \int_{-\infty}^{\frac{X_i^T\beta}{\sigma}} \frac{d}{dz} \phi(z) dz = \\ = &
+\Phi\left(\frac{X_i^T\beta}{\sigma}\right)X_i^T\beta 
++\sigma \phi\left(\frac{X_i^T\beta}{\sigma}\right)
+\end{align*}
+
+    \emph{c.} (10pt) Nielsen (2013, \{\it ISQ\}) investigates the impact of
+human rights violations on the flows of foreign aid from donor states to
+recipient states. The file \{\tt nielsenaid.csv\} contains a small
+subset of the original dataset and consists of the following variables
+measured for each donor-recipient dyad:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{lneconaid} --- log of economic aid commitments in U.S. dollars
+  in 2000
+\item
+  \texttt{l.physint} --- physical integrity violations index
+  (e.g.~toture) in 1999
+\item
+  \texttt{l.polity2} --- Polity IV democracy score in 1999
+\item
+  \texttt{l.lneconaid} --- one-year lagged value of \texttt{lneconaid}
+\item
+  \texttt{l.lnrgdp} --- log GDP per capita in 1999 candidate
+\item
+  \texttt{l.lnpop} -- log population in 1999
+\item
+  \texttt{colony} --- indicator of former colony
+\item
+  \texttt{recep} --- recipient country name degree
+\item
+  \texttt{donor} --- donor country name
+\end{itemize}
+
+Fit the above tobit model, where
+
+\begin{eqnarray*}
+Y_i & = & {\tt lneconaid}, \\
+X_i & = & [ { {\tt l.physint}, {\tt l.polity2}, {\tt l.lneconaid}, {\tt l.lnrgdp}, {\tt l.lnpop}, {\tt colony} } ]^\top,
+\end{eqnarray*}
+
+and estimate \(E[Y_i \mid X_i=x]\) and its asymptotic 95\% confidence
+interval, where \(x\) equals the medians for all predictors except
+\{\tt colony\}, and the mode for \{\tt colony\}. (For this question, you
+may ignore possible error correlation across observations, such as
+clustering. You may use a canned procedure to obtain the MLE of
+\(\beta\) and \(\sigma\) as well as their sampling variance matrix; but
+for \{\bf extra credit\}, calculate those via \{\tt optim\} on your
+own.)
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}18}]:} df \PY{o}{=} read.csv\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Data/nielsenaid.csv\PYZsq{}}\PY{p}{)}
+         model \PY{o}{=} censReg\PY{p}{(} lneconaid \PY{o}{\PYZti{}} l.physint\PY{o}{+}l.polity2\PY{o}{+}l.lneconaid\PY{o}{+}l.lnrgdp\PY{o}{+}l.lnpop\PY{o}{+}colony\PY{p}{,} 
+                          left \PY{o}{=} \PY{l+m}{0}\PY{p}{,} right \PY{o}{=} \PY{k+kc}{Inf}\PY{p}{,} data \PY{o}{=} df\PY{p}{)}
+         \PY{k+kp}{summary}\PY{p}{(}model\PY{p}{)}
+\end{Verbatim}
+
+    
+    \begin{verbatim}
+
+Call:
+censReg(formula = lneconaid ~ l.physint + l.polity2 + l.lneconaid + 
+    l.lnrgdp + l.lnpop + colony, left = 0, right = Inf, data = df)
+
+Observations:
+         Total  Left-censored     Uncensored Right-censored 
+          3129           1872           1257              0 
+
+Coefficients:
+            Estimate Std. error t value  Pr(> t)    
+(Intercept)  0.62113    0.75383   0.824   0.4100    
+l.physint    0.07140    0.03844   1.858   0.0632 .  
+l.polity2    0.01395    0.01209   1.154   0.2486    
+l.lneconaid  1.21494    0.02580  47.095  < 2e-16 ***
+l.lnrgdp    -0.52425    0.07526  -6.966 3.27e-12 ***
+l.lnpop      0.11769    0.05297   2.222   0.0263 *  
+colony      -0.12036    0.36842  -0.327   0.7439    
+logSigma     1.08275    0.02182  49.628  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Newton-Raphson maximisation, 6 iterations
+Return code 1: gradient close to zero
+Log-likelihood: -3879.845 on 8 Df
+
+    \end{verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}19}]:} coef \PY{o}{=}
+         \PY{k+kt}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{k+kp}{mean}\PY{p}{(}df\PY{o}{\PYZdl{}}l.physint\PY{p}{)}\PY{p}{,}
+         \PY{k+kp}{mean}\PY{p}{(}df\PY{o}{\PYZdl{}}l.polity2\PY{p}{)}\PY{p}{,}
+         \PY{k+kp}{mean}\PY{p}{(}df\PY{o}{\PYZdl{}}l.lneconaid\PY{p}{)}\PY{p}{,}
+         \PY{k+kp}{mean}\PY{p}{(}df\PY{o}{\PYZdl{}}l.lnrgdp\PY{p}{)}\PY{p}{,}
+         \PY{k+kp}{mean}\PY{p}{(}df\PY{o}{\PYZdl{}}l.lnpop\PY{p}{)}\PY{p}{,}
+         \PY{p}{(}\PY{k+kp}{mean}\PY{p}{(}df\PY{o}{\PYZdl{}}colony\PY{p}{)}\PY{o}{\PYZlt{}}\PY{l+m}{.5}\PY{p}{)}\PY{l+m}{+0}\PY{p}{)} \PY{c+c1}{\PYZsh{}Mode of colony}
+\end{Verbatim}
+
+    Now we compute the value of \(Y*\) and its standard deviation. The
+\([1,7]\) is because the last variable is logSigma, which we do not need
+to use. The idea is that we first compute the covariance matrix of
+\(\hat\beta\), which is the inverse of the hessian, and then the
+variance of \(\langle \hat\beta,x\rangle\) is precisely \$ x \^{}T
+COV(\hat\beta) x\$
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}20}]:} Ystar \PY{o}{=} model\PY{o}{\PYZdl{}}estimate\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{7}\PY{p}{]}\PY{o}{\PYZpc{}*\PYZpc{}}coef
+         Ystarsd\PY{o}{=} \PY{p}{(}\PY{o}{\PYZhy{}}coef\PY{o}{\PYZpc{}*\PYZpc{}}\PY{k+kp}{solve}\PY{p}{(}model\PY{o}{\PYZdl{}}hessian\PY{p}{)}\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{7}\PY{p}{,}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{7}\PY{p}{]}\PY{o}{\PYZpc{}*\PYZpc{}}coef\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m}{.5}
+         Ystar
+         Ystarsd
+\end{Verbatim}
+
+    \begin{tabular}{l}
+     -0.4422193\\
+\end{tabular}
+
+    
+    \begin{tabular}{l}
+     0.3715102\\
+\end{tabular}
+
+    
+    From this we know that the lower bound of a \(95\%\) confidence interval
+must be 0. Therefore, the upper bound can be compyted with the quantile
+of the normal (assimptotically).
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}21}]:} Ystar\PY{o}{+}qnorm\PY{p}{(}\PY{l+m}{.95}\PY{p}{)}\PY{o}{*}Ystarsd
+\end{Verbatim}
+
+    \begin{tabular}{l}
+     0.1688606\\
+\end{tabular}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}23}]:} tobit\PYZus{}likelihood\PYZus{}handler \PY{o}{=} \PY{p}{(}\PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{)}\PY{p}{\PYZob{}}
+             \PY{k+kr}{function}\PY{p}{(}betasigma\PY{p}{)}\PY{p}{\PYZob{}}
+                 beta \PY{o}{=} betasigma\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{7}\PY{p}{]}
+                 sigma \PY{o}{=} betasigma\PY{p}{[}\PY{l+m}{8}\PY{p}{]}
+                 \PY{o}{\PYZhy{}}tobit\PYZus{}log\PYZus{}likelihood\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}sigma\PY{p}{)}
+             \PY{p}{\PYZcb{}}
+         \PY{p}{\PYZcb{}}
+         \PY{p}{)}\PY{p}{(}X\PY{p}{,}Y\PY{p}{)}
+         start \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}\PY{l+m}{0.6}\PY{p}{,}\PY{l+m}{0.07}\PY{p}{,}\PY{l+m}{0.01}\PY{p}{,}\PY{l+m}{1.2}\PY{p}{,}\PY{l+m}{\PYZhy{}0.5}\PY{p}{,}\PY{l+m}{0.1}\PY{p}{,}\PY{l+m}{0.12}\PY{p}{,}\PY{l+m}{2.7}\PY{p}{)}
+         r \PY{o}{=} optim\PY{p}{(}start\PY{p}{,}tobit\PYZus{}likelihood\PYZus{}handler\PY{p}{,}
+                   hessian \PY{o}{=} \PY{l+m}{1}\PY{p}{,} control \PY{o}{=} \PY{p}{(}reltol \PY{o}{=} \PY{l+m}{1E\PYZhy{}12}\PY{p}{)}\PY{p}{)}
+         r\PY{o}{\PYZdl{}}par
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+        Error in X \%*\% beta: requires numeric/complex matrix/vector arguments
+    Traceback:
+
+
+        1. optim(start, tobit\_likelihood\_handler, hessian = 1, control = (reltol = 1e-12))
+
+        2. (function (par) 
+     . fn(par, {\ldots}))(c(0.6, 0.07, 0.01, 1.2, -0.5, 0.1, 0.12, 2.7))
+
+        3. fn(par, {\ldots})
+
+        4. tobit\_log\_likelihood(X, Y, beta, sigma)   \# at line 5 of file <text>
+
+    \end{Verbatim}
+
+    \section{Question 3}\label{question-3}
+
+(20 pt.) Consider a supervised learning problem in which you sample
+\(Y_i\) and \(X_i\) from \(p(X,Y)\). You assume an additive noise model
+such that: \(Y_i=f(X_i)+\epsilon_i\), and \(E[\epsilon_i|X_i]=0\). We
+wish to come up with \(\hat{f}(X)\) that is the best approximation to
+\(f(X)\) in some sense.
+
+    \textbf{a} (8pt.) First choose your loss function,
+\(L(Y_i,\hat f(X_i))\) to be squared loss. Show that the minimizer of
+this loss is found by choosing \(\hat{f}(X_i)=E[Y_i|X_i]\). (It suffices
+to show this pointwise, i.e.~conditional on a particular choice of
+\(X\)).
+
+    Pointwise we have
+
+\begin{align*}
+E(L[Y_i,\hat f(X_I))] = &
+E[(Y_i-f(X_i))^2|X_I] =  \\ = &
+E[(Y_i-\bar Y_i + \bar Y_i -\hat f(X_i))^2|X_I] =  \\ = &
+E[(Y_i-\bar Y_i)^2+ ( \bar Y_i -\hat f(X_i))^2|X_I] =  \\ = &
+E[(Y_i-\bar Y_i)^2|X_I] 
++ E[(\bar Y_i -\hat f(X_i))^2]
+\end{align*}
+
+Of the two last summands, the first does not deppend on \(\hat f\) and
+the seond is clearly minimized when \(\hat{f}(X_i)=E[Y_i|X_i]\), as we
+wanted to prove. Note that we have used the property that for two
+intependent random variables
+\(E[(X-Y)^2] = E[(\bar X -X)^2)+ E[(\bar X - Y)^2]\)
+
+    \textbf{b.} (10pt.) Show that the expected generalization error,
+\(\mathcal{R} = E[(Y_i-\hat{f}(X_i))^2]\), can be decomposed into an
+irreducible error, a bias term, and a variance term. Furthermore,
+describe in plain English the meaning of variance and bias in this
+context. (Again, it suffices to do this pointwise, conditionally on
+\(X\)).
+
+    Using the previous result, we have:
+
+\begin{align*}
+E[(Y_i-f(X_i))^2] =  &
+E[(Y_i-\bar Y_i)^2] 
++ E[(\bar Y_i -\hat f(X_i))^2] = \\ = &
+E[(Y_i-\bar Y_i)^2] 
++ E[(\bar Y_i -E[\hat f(X_i)]+E[\hat f(X_i)]-\hat f(X_i))^2] = \\ = &
+E[(Y_i-\bar Y_i)^2] 
++ E[(\bar Y_i -E[\hat f(X_i)])^2+(E[\hat f(X_i)]-\hat f(X_i))^2] = \\ = &
+E[(Y_i-\bar Y_i)^2] 
++ E[(\bar Y_i -E[\hat f(X_i)])^2]+E[(E[\hat f(X_i)]-\hat f(X_i))^2]
+\end{align*}
+
+Where we have used (again) the same property of the expectations of
+squares of differences. THe first term is the irreducible error, the
+second therm is the bias term and the third term the variance term.
+
+The variance term is the ineherent variance on the predictor function
+due to the fact that it is produced from random variables, the bias term
+is the perdiction error inherent to the learning algorithm, due to the
+fact that the real function cannot be totally understood by the
+predictor in some cases. It cannot be solved even by adding more data.
+
+    \textbf{c} (2pt.) In general how does a learning algorithm's flexibility
+relate to the bias and variance terms described above?
+
+    Assymptotically the flexibility decreases the bias, as since the
+function space is bigger, there is in some sense a higher chance that
+the space contains a function that is very similar to the real function
+underlying the process. On the other hand, higher flexibility means
+there are functions in the function space that charactherize the noise
+as well (in the sense that they overfit), and therefore we expect the
+variance to be higher. This can be formalized by saying that if we have
+two function spaces \(E_1 \subseteq E_2\), then for any function we try
+to approximate, the bias error of \(E_2\) will allways be smaller (or
+equal) to the one for \(E_2\).
 
     \section{Question 4}\label{question-4}
 
@@ -636,28 +1103,27 @@ following four data generating processes:
 \end{itemize}
 
 \(X\) is drawn from the uniform distribution in {[}-4,4{]} and
-\$\epsilon
- \$ is drawn from a standard normal (\(\mu =0\), \(\sigma^2\) = 1).
-\textbackslash{}begin\{enumerate\}
+\(\epsilon\) is drawn from a standard normal (\(\mu =0\), \(\sigma^2\) =
+1).
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor} }]:} DGP1 \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}X\PY{p}{)}\PY{p}{\PYZob{}}
-            \PY{l+m}{\PYZhy{}2}   \PY{o}{*}\PY{p}{(}X \PY{o}{\PYZlt{}} \PY{l+m}{\PYZhy{}3}\PY{p}{)}
-            \PY{l+m}{+2.55}\PY{o}{*}\PY{p}{(}X \PY{o}{\PYZgt{}} \PY{l+m}{\PYZhy{}2}\PY{p}{)}
-            \PY{l+m}{\PYZhy{}2}   \PY{o}{*}\PY{p}{(}X \PY{o}{\PYZgt{}}  \PY{l+m}{0}\PY{p}{)}
-            \PY{l+m}{+4}   \PY{o}{*}\PY{p}{(}X \PY{o}{\PYZgt{}}  \PY{l+m}{2}\PY{p}{)}
-            \PY{l+m}{\PYZhy{}1}   \PY{o}{*}\PY{p}{(}X \PY{o}{\PYZgt{}}  \PY{l+m}{3}\PY{p}{)}\PY{p}{\PYZcb{}}
-        DGP2 \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}X\PY{p}{)}\PY{p}{\PYZob{}}
-            \PY{l+m}{6}\PY{l+m}{+0.4}\PY{o}{*}X\PY{l+m}{\PYZhy{}0.36}\PY{o}{*}X\PY{o}{\PYZca{}}\PY{l+m}{2}\PY{l+m}{+0.005}\PY{o}{*}X\PY{o}{\PYZca{}}\PY{l+m}{3}
-        \PY{p}{\PYZcb{}}
-        DGP3 \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}X\PY{p}{)}\PY{p}{\PYZob{}}
-            \PY{l+m}{2.83}\PY{o}{*}\PY{k+kp}{sin}\PY{p}{(}\PY{k+kc}{pi}\PY{o}{/}\PY{l+m}{2}\PY{o}{*}X\PY{p}{)}
-        \PY{p}{\PYZcb{}}
-        DGP4 \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}X\PY{p}{)}\PY{p}{\PYZob{}}
-            \PY{l+m}{4}\PY{o}{*}\PY{k+kp}{sin}\PY{p}{(}\PY{l+m}{3}\PY{o}{*}\PY{k+kc}{pi}\PY{o}{*}x\PY{p}{)}\PY{o}{*}\PY{p}{(}X\PY{o}{\PYZgt{}}\PY{l+m}{0}\PY{p}{)}
-        \PY{p}{\PYZcb{}}
-        ERR \PY{o}{=} rnorm
-        DGP \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}DGP1\PY{p}{,}DGP2\PY{p}{,}DGP3\PY{p}{,}DGP4\PY{p}{)}
+{\color{incolor}In [{\color{incolor}24}]:} DGP1 \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}X\PY{p}{)}\PY{p}{\PYZob{}}\PY{p}{(}
+             \PY{l+m}{\PYZhy{}2}   \PY{o}{*}\PY{p}{(}X \PY{o}{\PYZlt{}} \PY{l+m}{\PYZhy{}3}\PY{p}{)}
+             \PY{l+m}{+2.55}\PY{o}{*}\PY{p}{(}X \PY{o}{\PYZgt{}} \PY{l+m}{\PYZhy{}2}\PY{p}{)}
+             \PY{l+m}{\PYZhy{}2}   \PY{o}{*}\PY{p}{(}X \PY{o}{\PYZgt{}}  \PY{l+m}{0}\PY{p}{)}
+             \PY{l+m}{+4}   \PY{o}{*}\PY{p}{(}X \PY{o}{\PYZgt{}}  \PY{l+m}{2}\PY{p}{)}
+             \PY{l+m}{\PYZhy{}1}   \PY{o}{*}\PY{p}{(}X \PY{o}{\PYZgt{}}  \PY{l+m}{3}\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}
+         DGP2 \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}X\PY{p}{)}\PY{p}{\PYZob{}}
+             \PY{l+m}{6}\PY{l+m}{+0.4}\PY{o}{*}X\PY{l+m}{\PYZhy{}0.36}\PY{o}{*}X\PY{o}{\PYZca{}}\PY{l+m}{2}\PY{l+m}{+0.005}\PY{o}{*}X\PY{o}{\PYZca{}}\PY{l+m}{3}
+         \PY{p}{\PYZcb{}}
+         DGP3 \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}X\PY{p}{)}\PY{p}{\PYZob{}}
+             \PY{l+m}{2.83}\PY{o}{*}\PY{k+kp}{sin}\PY{p}{(}\PY{k+kc}{pi}\PY{o}{/}\PY{l+m}{2}\PY{o}{*}X\PY{p}{)}
+         \PY{p}{\PYZcb{}}
+         DGP4 \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}X\PY{p}{)}\PY{p}{\PYZob{}}
+             \PY{l+m}{4}\PY{o}{*}\PY{k+kp}{sin}\PY{p}{(}\PY{l+m}{3}\PY{o}{*}\PY{k+kc}{pi}\PY{o}{*}X\PY{p}{)}\PY{o}{*}\PY{p}{(}X\PY{o}{\PYZgt{}}\PY{l+m}{0}\PY{p}{)}
+         \PY{p}{\PYZcb{}}
+         ERR \PY{o}{=} rnorm
+         DGP \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}DGP1\PY{p}{,}DGP2\PY{p}{,}DGP3\PY{p}{,}DGP4\PY{p}{)}
 \end{Verbatim}
 
     (5 pts.) Write a function to estimate the generalization error of a
@@ -666,103 +1132,287 @@ the data, the degree of the polynomial, and the number of folds \(k\).
 It should return the cross-validation mean squared error.
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor} }]:} n \PY{o}{=} \PY{k+kp}{nrow}\PY{p}{(}data\PY{p}{)}\PY{p}{;}
-        data \PY{o}{=} data\PY{p}{[}\PY{k+kp}{sample}\PY{p}{(}n\PY{p}{)}\PY{p}{,}\PY{p}{]}
-        folds \PY{o}{=} \PY{k+kp}{cut}\PY{p}{(}\PY{k+kp}{seq}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}data\PY{p}{)}\PY{p}{,}breaks\PY{o}{=}N\PY{p}{,}labels\PY{o}{=}\PY{k+kc}{FALSE}\PY{p}{)}
-        \PY{k+kr}{for}\PY{p}{(}i \PY{k+kr}{in} \PY{l+m}{1}\PY{o}{:}N\PY{p}{)}
-        \PY{p}{\PYZob{}}
-            ind \PY{o}{=} \PY{k+kp}{which}\PY{p}{(}folds\PY{o}{==}i\PY{p}{,}arr.ind\PY{o}{=}\PY{k+kc}{TRUE}\PY{p}{)}
-            test \PY{o}{=} yourData\PY{p}{[}ind\PY{p}{,}\PY{p}{]}
-            train \PY{o}{=} yourData\PY{p}{[}\PY{o}{\PYZhy{}}ind\PY{p}{,}\PY{p}{]}
-        \PY{p}{\PYZcb{}}
-\end{Verbatim}
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor} }]:} s \PY{o}{=} \PY{k+kt}{matrix}\PY{p}{(}\PY{k+kt}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{,}\PY{l+m}{3}\PY{p}{,}\PY{l+m}{4}\PY{p}{,}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{,}\PY{l+m}{3}\PY{p}{,}\PY{l+m}{4}\PY{p}{,}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{,}\PY{l+m}{3}\PY{p}{,}\PY{l+m}{4}\PY{p}{)}\PY{p}{,}nrow \PY{o}{=} \PY{l+m}{4}\PY{p}{,}byrow \PY{o}{=} \PY{l+m}{1}\PY{p}{)}
-\end{Verbatim}
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor} }]:} \PY{k+kp}{rowSums}\PY{p}{(}s\PY{p}{)}
-\end{Verbatim}
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor} }]:} s\PY{p}{[}\PY{p}{,}\PY{l+m}{3}\PY{p}{]} \PY{o}{=} \PY{l+m}{1}
-\end{Verbatim}
-
-    \section{Heavy lifting for 2.}\label{heavy-lifting-for-2.}
-
-This is where dirty things happen so that the inline code looks
-beautiful
-
-    This is the \texttt{wrapper} function used in exercise 2, it precomputes
-everything the equations need, and thus it greatly simplifies the
-calculations!
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}3}]:} wrapper \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}\PY{k+kp}{expression}\PY{p}{)}\PY{p}{\PYZob{}}
-            \PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{,}
-                     phi \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}x\PY{p}{)}\PY{p}{\PYZob{}}\PY{k+kp}{exp}\PY{p}{(}x\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{l+m}{1}\PY{o}{+}\PY{k+kp}{exp}\PY{p}{(}x\PY{p}{)}\PY{p}{)}\PY{p}{\PYZcb{}}\PY{p}{,}
-                     dphi \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}x\PY{p}{)}\PY{p}{\PYZob{}}\PY{k+kp}{exp}\PY{p}{(}x\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{l+m}{1}\PY{o}{+}\PY{k+kp}{exp}\PY{p}{(}x\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m}{2}\PY{p}{\PYZcb{}}\PY{p}{)}
-            \PY{p}{\PYZob{}}
-                psi \PY{o}{=} \PY{k+kp}{append}\PY{p}{(}psi\PY{p}{,}\PY{l+m}{10}\PY{p}{)}\PY{p}{;} \PY{c+c1}{\PYZsh{}add the \PYZsq{}infinity\PYZsq{}}
-                m \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}psi\PY{p}{)}\PY{p}{;}
-                M \PY{o}{=} compute\PYZus{}M\PY{p}{(}Y\PY{p}{,}m\PY{p}{)}\PY{p}{;}
-                l \PY{o}{=} linear\PYZus{}combination\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}\PY{p}{;}
-                
-                 phix \PY{o}{=} phi\PY{p}{(}l\PY{p}{)}\PY{p}{;}   phix\PY{p}{[}\PY{p}{,}m\PY{p}{]}\PY{o}{=}\PY{l+m}{1}\PY{p}{;} \PY{c+c1}{\PYZsh{}impose the \PYZsq{}infinity\PYZsq{}}
-                dphix \PY{o}{=} phi\PY{p}{(}l\PY{p}{)}\PY{p}{;}  dphix\PY{p}{[}\PY{p}{,}m\PY{p}{]}\PY{o}{=}\PY{l+m}{0}\PY{p}{;} \PY{c+c1}{\PYZsh{}impose the \PYZsq{}infinity\PYZsq{}}
-        
-                 \PY{c+c1}{\PYZsh{}this is where everything happens}
-                \PY{k+kp}{expression}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{,}M\PY{p}{,}phix\PY{p}{,}dphix\PY{p}{)}\PY{p}{;}
-            \PY{p}{\PYZcb{}}
-        \PY{p}{\PYZcb{}}
-\end{Verbatim}
-
-    In order for the code to run, we need the \texttt{compute\_M} function
-that creates the \texttt{M} matrix defined above:
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}4}]:} compute\PYZus{}M \PY{o}{=} \PY{k+kr}{function} \PY{p}{(}Y\PY{p}{,}m\PY{p}{)}\PY{p}{\PYZob{}}
-            
-            \PY{c+c1}{\PYZsh{}This is just a One Hot encoder:}
-            n \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}Y\PY{p}{)}
-            M1 \PY{o}{=} \PY{k+kp}{t}\PY{p}{(}\PY{k+kt}{matrix}\PY{p}{(}\PY{k+kp}{rep}\PY{p}{(}\PY{k+kt}{c}\PY{p}{(}\PY{l+m}{1}\PY{o}{:}m\PY{p}{)}\PY{p}{,}n\PY{p}{)}\PY{p}{,}m\PY{p}{)}\PY{p}{)}
-            M2 \PY{o}{=} \PY{k+kt}{matrix}\PY{p}{(}\PY{k+kp}{rep}\PY{p}{(}\PY{k+kt}{c}\PY{p}{(}Y\PY{p}{)}\PY{p}{,}m\PY{p}{)}\PY{p}{,}n\PY{p}{)}
-            M \PY{o}{=} \PY{p}{(}M1\PY{o}{==}M2\PY{p}{)}\PY{l+m}{+0}
-            
-            \PY{c+c1}{\PYZsh{}Create the matrix K}
-            K \PY{o}{=} \PY{k+kp}{diag}\PY{p}{(}m\PY{l+m}{+1}\PY{p}{)}
-            K \PY{o}{=} \PY{o}{\PYZhy{}}K\PY{p}{[}\PY{l+m}{1}\PY{o}{:}m\PY{p}{,}\PY{p}{]}\PY{o}{+}K\PY{p}{[}\PY{l+m}{2}\PY{o}{:}\PY{p}{(}m\PY{l+m}{+1}\PY{p}{)}\PY{p}{,}\PY{p}{]}
-            K \PY{o}{=} K\PY{p}{[}\PY{l+m}{1}\PY{o}{:}m\PY{p}{,}\PY{l+m}{1}\PY{o}{:}m\PY{l+m}{+1}\PY{p}{]}
-            
-            \PY{c+c1}{\PYZsh{}Return the product}
-            M\PY{o}{\PYZpc{}*\PYZpc{}}K
-        \PY{p}{\PYZcb{}}
-\end{Verbatim}
-
-    We also used - without declaration - a function ``linear combination'',
-that should return the linear combination inside the inverse link
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}13}]:} linear\PYZus{}combination \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}X\PY{p}{,}Y\PY{p}{,}\PY{k+kp}{beta}\PY{p}{,}psi\PY{p}{)}\PY{p}{\PYZob{}}
-             m \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}psi\PY{p}{)} \PY{c+c1}{\PYZsh{}possible results, from 1 to m.}
-             n \PY{o}{=} \PY{k+kp}{length}\PY{p}{(}Y\PY{p}{)} \PY{c+c1}{\PYZsh{}number of observatons}
-             \PY{k+kr}{if}\PY{p}{(}\PY{k+kc}{TRUE}\PY{p}{)}\PY{p}{\PYZob{}}
-                 beta2 \PY{o}{=} \PY{k+kt}{matrix}\PY{p}{(}\PY{k+kp}{rep}\PY{p}{(}\PY{k+kp}{beta}\PY{p}{,}m\PY{p}{)}\PY{p}{,}ncol\PY{o}{=}m\PY{p}{,}byrow\PY{o}{=}\PY{l+m}{0}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}25}]:} genError \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}df\PY{p}{,}deg\PY{p}{,}k\PY{p}{)}\PY{p}{\PYZob{}}
+             n \PY{o}{=} \PY{k+kp}{nrow}\PY{p}{(}df\PY{p}{)}\PY{p}{;}
+             sampler \PY{o}{=} \PY{k+kp}{sample}\PY{p}{(}n\PY{p}{)}
+             df \PY{o}{=} df\PY{p}{[}sampler\PY{p}{,}\PY{p}{]}
+             folds \PY{o}{=} \PY{k+kp}{cut}\PY{p}{(}\PY{k+kp}{seq}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}n\PY{p}{)}\PY{p}{,}breaks\PY{o}{=}k\PY{p}{,}labels\PY{o}{=}\PY{k+kc}{FALSE}\PY{p}{)}
+             sse \PY{o}{=} \PY{l+m}{0}\PY{p}{;}
+             ise \PY{o}{=} \PY{l+m}{0}\PY{p}{;}
+             \PY{k+kr}{for}\PY{p}{(}i \PY{k+kr}{in} \PY{l+m}{1}\PY{o}{:}k\PY{p}{)}
+             \PY{p}{\PYZob{}}
+                 ind \PY{o}{=} \PY{k+kp}{which}\PY{p}{(}folds\PY{o}{==}i\PY{p}{,}arr.ind\PY{o}{=}\PY{k+kc}{TRUE}\PY{p}{)}
+                 test \PY{o}{=} df\PY{p}{[}ind\PY{p}{,}\PY{p}{]}
+                 train \PY{o}{=} df\PY{p}{[}\PY{o}{\PYZhy{}}ind\PY{p}{,}\PY{p}{]}
+                 model \PY{o}{=} lm\PY{p}{(}Y \PY{o}{\PYZti{}} poly\PY{p}{(}X\PY{p}{,}deg\PY{p}{)}\PY{p}{,} data \PY{o}{=} train\PY{p}{)}
+                 
+                 newY \PY{o}{=}  predict\PY{p}{(}model\PY{p}{,}test\PY{p}{)}
+                 sse \PY{o}{=} sse \PY{o}{+} \PY{k+kp}{sum}\PY{p}{(}\PY{p}{(}newY\PY{o}{\PYZhy{}}test\PY{o}{\PYZdl{}}Y\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m}{2}\PY{p}{)}
+                 newY \PY{o}{=}  predict\PY{p}{(}model\PY{p}{,}train\PY{p}{)}
+                 ise \PY{o}{=} ise \PY{o}{+} \PY{k+kp}{sum}\PY{p}{(}\PY{p}{(}newY\PY{o}{\PYZhy{}}train\PY{o}{\PYZdl{}}Y\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m}{2}\PY{p}{)}
              \PY{p}{\PYZcb{}}
-             \PY{k+kp}{else}\PY{p}{\PYZob{}}
-                 beta2 \PY{o}{=} \PY{k+kp}{beta}
+             \PY{k+kr}{return}\PY{p}{(}\PY{k+kt}{list}\PY{p}{(}sse\PY{o}{/}n\PY{p}{,}ise\PY{o}{/}\PY{p}{(}n\PY{o}{*}\PY{p}{(}k\PY{l+m}{\PYZhy{}1}\PY{p}{)}\PY{p}{)}\PY{p}{,}model\PY{p}{)}\PY{p}{)}
+         \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+    Now a function to make some plots using this!
+
+    \textit{(5 pts.)} Generate a dataset of size \(n = 100\) from each of
+the four DGPs. For OLS fits of polynomials of orders
+\(d = 0 \ldots 10\), calculate the in-sample MSE and the cross-validated
+MSE (with \(k=10\)). For each dataset, plot the in-sample mean squared
+error and the cross-validated MSE as a function of \(d\). For each
+dataset, what order polynomial has the best out of sample performance?
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}26}]:} N \PY{o}{=} \PY{l+m}{100}
+         X \PY{o}{=} \PY{l+m}{8}\PY{o}{*}runif\PY{p}{(}N\PY{p}{)}\PY{l+m}{\PYZhy{}4}
+         R \PY{o}{=} \PY{k+kp}{sapply}\PY{p}{(}DGP\PY{p}{,}\PY{k+kr}{function}\PY{p}{(}y\PY{p}{)}\PY{p}{\PYZob{}}y\PY{p}{(}X\PY{p}{)}\PY{o}{+}ERR\PY{p}{(}X\PY{p}{)}\PY{p}{\PYZcb{}}\PY{p}{)}
+         df \PY{o}{=} \PY{k+kt}{data.frame}\PY{p}{(}R\PY{p}{)}
+         \PY{k+kp}{colnames}\PY{p}{(}df\PY{p}{)} \PY{o}{=} \PY{l+m}{1}\PY{o}{:}\PY{l+m}{4}
+         df\PY{o}{\PYZdl{}}x \PY{o}{=} X
+         make\PYZus{}the\PYZus{}plot\PY{o}{=} \PY{k+kr}{function} \PY{p}{(}i\PY{p}{)}\PY{p}{\PYZob{}}
+             helper \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}deg\PY{p}{)}\PY{p}{\PYZob{}}
+                 d \PY{o}{=} \PY{k+kt}{data.frame}\PY{p}{(}df\PY{o}{\PYZdl{}}x\PY{p}{,}df\PY{p}{[}i\PY{p}{]}\PY{p}{)}
+                 \PY{k+kp}{colnames}\PY{p}{(}d\PY{p}{)} \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{X\PYZsq{}}\PY{p}{,}\PY{l+s}{\PYZsq{}}\PY{l+s}{Y\PYZsq{}}\PY{p}{)}
+                 genError\PY{p}{(}d\PY{p}{,}deg\PY{p}{,}\PY{l+m}{4}\PY{p}{)}
              \PY{p}{\PYZcb{}}
-             linear \PY{o}{=}  \PY{o}{\PYZhy{}} \PY{p}{(}X\PY{o}{\PYZpc{}*\PYZpc{}}beta2\PY{p}{)}
-             origin \PY{o}{=}  \PY{k+kt}{matrix}\PY{p}{(}\PY{k+kp}{rep}\PY{p}{(}psi\PY{p}{,}n\PY{p}{)} \PY{p}{,}nrow \PY{o}{=} n\PY{p}{,} byrow \PY{o}{=} \PY{l+m}{1}\PY{p}{)}
-             origin \PY{o}{+}  linear
+         
+             res \PY{o}{=} \PY{k+kp}{sapply}\PY{p}{(}\PY{k+kt}{c}\PY{p}{(}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{10}\PY{p}{)}\PY{p}{,}helper\PY{p}{)}
+             mse \PY{o}{=} \PY{k+kp}{unlist}\PY{p}{(}res\PY{p}{[}\PY{l+m}{1}\PY{p}{,}\PY{p}{]}\PY{p}{)}
+             ise \PY{o}{=} \PY{k+kp}{unlist}\PY{p}{(}res\PY{p}{[}\PY{l+m}{2}\PY{p}{,}\PY{p}{]}\PY{p}{)}
+             deg \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{10}\PY{p}{)}
+         
+         
+             results \PY{o}{=} \PY{k+kt}{data.frame}\PY{p}{(}deg\PY{p}{,}mse\PY{p}{,}ise\PY{p}{)}
+             \PY{k+kp}{names}\PY{p}{(}results\PY{p}{)} \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{degree\PYZsq{}}\PY{p}{,}\PY{l+s}{\PYZsq{}}\PY{l+s}{Out of sample\PYZsq{}}\PY{p}{,}\PY{l+s}{\PYZsq{}}\PY{l+s}{In sample\PYZsq{}}\PY{p}{)}
+             results2 \PY{o}{=} results
+         
+             df \PY{o}{=} melt\PY{p}{(}results \PY{p}{,}  id.vars \PY{o}{=} \PY{l+s}{\PYZsq{}}\PY{l+s}{degree\PYZsq{}}\PY{p}{)}
+             \PY{k+kp}{names}\PY{p}{(}df\PY{p}{)} \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Degree\PYZsq{}}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{Error\PYZus{}type\PYZsq{}}\PY{p}{,}\PY{l+s}{\PYZsq{}}\PY{l+s}{MSE\PYZsq{}}\PY{p}{)}
+         
+         
+             plot \PY{o}{=} ggplot\PY{p}{(}df\PY{p}{,} aes\PY{p}{(}x \PY{o}{=} Degree\PY{p}{,}y \PY{o}{=} MSE\PY{p}{)}\PY{p}{)}
+             plot \PY{o}{=} plot \PY{o}{+} geom\PYZus{}line\PY{p}{(}aes\PY{p}{(}colour \PY{o}{=} Error\PYZus{}type\PY{p}{)}\PY{p}{)}
+             plot \PY{o}{=} plot \PY{o}{+} ggtitle\PY{p}{(}\PY{k+kp}{paste}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{Function DGP\PYZdq{}}\PY{p}{,}\PY{k+kp}{toString}\PY{p}{(}i\PY{p}{)}\PY{p}{,}sep\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
+             \PY{k+kt}{list}\PY{p}{(}results\PY{p}{,}\PY{k+kp}{which.min}\PY{p}{(}results\PY{p}{[[}\PY{l+s}{\PYZsq{}}\PY{l+s}{Out of sample\PYZsq{}}\PY{p}{]]}\PY{p}{)}\PY{p}{,}plot\PY{p}{)}
          \PY{p}{\PYZcb{}}
 \end{Verbatim}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor} }]:} 
+{\color{incolor}In [{\color{incolor}27}]:} x1 \PY{o}{=} make\PYZus{}the\PYZus{}plot\PY{p}{(}\PY{l+m}{1}\PY{p}{)}
+         x1\PY{p}{[[}\PY{l+m}{3}\PY{p}{]]}
+         x1\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}
+         
+         x2 \PY{o}{=} make\PYZus{}the\PYZus{}plot\PY{p}{(}\PY{l+m}{2}\PY{p}{)}
+         x2\PY{p}{[[}\PY{l+m}{3}\PY{p}{]]}
+         x2\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}
+         
+         x3 \PY{o}{=} make\PYZus{}the\PYZus{}plot\PY{p}{(}\PY{l+m}{3}\PY{p}{)}
+         x3\PY{p}{[[}\PY{l+m}{3}\PY{p}{]]}
+         x3\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}
+         
+         x4 \PY{o}{=} make\PYZus{}the\PYZus{}plot\PY{p}{(}\PY{l+m}{4}\PY{p}{)}
+         x4\PY{p}{[[}\PY{l+m}{3}\PY{p}{]]}
+         x4\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}
 \end{Verbatim}
 
+    
+    
+    8
+
+    
+    
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Pset3_files/Pset3_68_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    2
+
+    
+    
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Pset3_files/Pset3_68_6.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    7
+
+    
+    
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Pset3_files/Pset3_68_9.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    2
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Pset3_files/Pset3_68_11.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{k+kt}{c}\PY{p}{(}x1\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}\PY{p}{,}x2\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}\PY{p}{,}x3\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}\PY{p}{,}x4\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}\PY{p}{)}
+\end{Verbatim}
+
+    Now if we repeat again for the case of \(10^4\) we obtain:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}29}]:} N \PY{o}{=} \PY{l+m}{10000}
+         X \PY{o}{=} \PY{l+m}{8}\PY{o}{*}runif\PY{p}{(}N\PY{p}{)}\PY{l+m}{\PYZhy{}4}
+         R \PY{o}{=} \PY{k+kp}{sapply}\PY{p}{(}DGP\PY{p}{,}\PY{k+kr}{function}\PY{p}{(}y\PY{p}{)}\PY{p}{\PYZob{}}y\PY{p}{(}X\PY{p}{)}\PY{o}{+}ERR\PY{p}{(}X\PY{p}{)}\PY{p}{\PYZcb{}}\PY{p}{)}
+         df \PY{o}{=} \PY{k+kt}{data.frame}\PY{p}{(}R\PY{p}{)}
+         \PY{k+kp}{colnames}\PY{p}{(}df\PY{p}{)} \PY{o}{=} \PY{l+m}{1}\PY{o}{:}\PY{l+m}{4}
+         df\PY{o}{\PYZdl{}}x \PY{o}{=} X
+         x1 \PY{o}{=} make\PYZus{}the\PYZus{}plot\PY{p}{(}\PY{l+m}{1}\PY{p}{)}
+         x1\PY{p}{[[}\PY{l+m}{3}\PY{p}{]]}
+         
+         x2 \PY{o}{=} make\PYZus{}the\PYZus{}plot\PY{p}{(}\PY{l+m}{2}\PY{p}{)}
+         x2\PY{p}{[[}\PY{l+m}{3}\PY{p}{]]}
+         
+         x3 \PY{o}{=} make\PYZus{}the\PYZus{}plot\PY{p}{(}\PY{l+m}{3}\PY{p}{)}
+         x3\PY{p}{[[}\PY{l+m}{3}\PY{p}{]]}
+         
+         x4 \PY{o}{=} make\PYZus{}the\PYZus{}plot\PY{p}{(}\PY{l+m}{4}\PY{p}{)}
+         x4\PY{p}{[[}\PY{l+m}{3}\PY{p}{]]}
+\end{Verbatim}
+
+    
+    
+    
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Pset3_files/Pset3_71_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Pset3_files/Pset3_71_4.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Pset3_files/Pset3_71_6.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Pset3_files/Pset3_71_7.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}30}]:} \PY{k+kt}{c}\PY{p}{(}x1\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}\PY{p}{,}x2\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}\PY{p}{,}x3\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}\PY{p}{,}x4\PY{p}{[[}\PY{l+m}{2}\PY{p}{]]}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{enumerate*}
+\item 10
+\item 4
+\item 9
+\item 9
+\end{enumerate*}
+
+    
+    Extra: How does the out of sample error improve with the data for every
+degree?
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}31}]:} testCompare\PY{o}{=} \PY{k+kr}{function} \PY{p}{(}interval\PYZus{}d\PY{p}{,}f\PY{p}{,}interval\PYZus{}i\PY{p}{,}n\PYZus{}times\PY{o}{=}\PY{l+m}{3}\PY{p}{)}\PY{p}{\PYZob{}}
+             h \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}N\PY{p}{,}D\PY{p}{)}\PY{p}{\PYZob{}}
+                 r \PY{o}{=} \PY{l+m}{0}\PY{p}{;}
+                 n \PY{o}{=} \PY{k+kp}{round}\PY{p}{(}\PY{k+kp}{max}\PY{p}{(}n\PYZus{}times\PY{p}{,}\PY{p}{(}n\PYZus{}times\PY{o}{*}\PY{l+m}{1E2}\PY{p}{)}\PY{o}{/}N\PY{l+m}{+1}\PY{p}{)}\PY{p}{)}
+                 \PY{k+kr}{for}\PY{p}{(}i \PY{k+kr}{in} \PY{l+m}{1}\PY{o}{:}n\PY{p}{)}\PY{p}{\PYZob{}}
+                     X \PY{o}{=} \PY{l+m}{8}\PY{o}{*}runif\PY{p}{(}N\PY{p}{)}\PY{l+m}{\PYZhy{}4}
+                     Y \PY{o}{=} f\PY{p}{(}X\PY{p}{)}\PY{o}{+}ERR\PY{p}{(}X\PY{p}{)}
+                     df \PY{o}{=} \PY{k+kt}{data.frame}\PY{p}{(}X\PY{p}{,}Y\PY{p}{)}
+                     r\PY{o}{=}r\PY{o}{+}genError\PY{p}{(}df\PY{p}{,}D\PY{p}{,}\PY{l+m}{4}\PY{p}{)}\PY{p}{[[}\PY{l+m}{1}\PY{p}{]]}
+                 \PY{p}{\PYZcb{}}
+                 r\PY{o}{/}n
+             \PY{p}{\PYZcb{}}
+             r \PY{o}{=} \PY{k+kp}{sapply}\PY{p}{(}interval\PYZus{}d\PY{p}{,}
+                    \PY{k+kr}{function}\PY{p}{(}D\PY{p}{)}\PY{p}{\PYZob{}}
+                        h2 \PY{o}{=} \PY{k+kr}{function}\PY{p}{(}N\PY{p}{)}\PY{p}{\PYZob{}}h\PY{p}{(}N\PY{p}{,}D\PY{p}{)}\PY{p}{\PYZcb{}}
+                        \PY{k+kp}{sapply}\PY{p}{(}interval\PYZus{}i\PY{p}{,}
+                               h2\PY{p}{)}
+                    \PY{p}{\PYZcb{}}
+                   \PY{p}{)}
+             r \PY{o}{=} \PY{k+kt}{data.frame}\PY{p}{(}r\PY{p}{)}
+             \PY{k+kp}{colnames}\PY{p}{(}r\PY{p}{)} \PY{o}{=} \PY{k+kp}{lapply}\PY{p}{(}interval\PYZus{}d\PY{p}{,} 
+                            \PY{k+kp}{toString}\PY{p}{)}
+             r\PY{o}{\PYZdl{}}x \PY{o}{=} interval\PYZus{}i
+             r
+         \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}32}]:} make\PYZus{}the\PYZus{}plot\PY{o}{=}\PY{k+kr}{function}\PY{p}{(}i\PY{p}{)}\PY{p}{\PYZob{}}
+             degrees \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{10}\PY{p}{)}
+             x \PY{o}{=} \PY{k+kp}{round}\PY{p}{(}\PY{k+kt}{c}\PY{p}{(}\PY{l+m}{20}\PY{o}{*}\PY{l+m}{100}\PY{o}{\PYZca{}}\PY{p}{(}\PY{p}{(}\PY{l+m}{0}\PY{o}{:}\PY{l+m}{20}\PY{p}{)}\PY{o}{/}\PY{l+m}{20}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+             r \PY{o}{=} testCompare\PY{p}{(}degrees\PY{p}{,}DGP\PY{p}{[[}i\PY{p}{]]}\PY{p}{,}x\PY{p}{)}
+             df \PY{o}{=} melt\PY{p}{(}r \PY{p}{,}  id.vars \PY{o}{=} \PY{l+s}{\PYZsq{}}\PY{l+s}{x\PYZsq{}}\PY{p}{)}
+             \PY{k+kp}{names}\PY{p}{(}df\PY{p}{)} \PY{o}{=} \PY{k+kt}{c}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Iterations\PYZsq{}}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{Degree\PYZsq{}}\PY{p}{,}\PY{l+s}{\PYZsq{}}\PY{l+s}{MSE\PYZsq{}}\PY{p}{)}
+             plot \PY{o}{=} ggplot\PY{p}{(}df\PY{p}{,} aes\PY{p}{(}Iterations\PY{p}{,}MSE\PY{p}{)}\PY{p}{)}
+             plot \PY{o}{=} plot \PY{o}{+} geom\PYZus{}line\PY{p}{(}aes\PY{p}{(}colour \PY{o}{=} Degree\PY{p}{)}\PY{p}{)}
+             plot \PY{o}{=} plot \PY{o}{+} scale\PYZus{}y\PYZus{}log10\PY{p}{(}\PY{p}{)} \PY{o}{+} scale\PYZus{}x\PYZus{}log10\PY{p}{(}\PY{p}{)} 
+             plot \PY{o}{=} plot \PY{o}{+} ggtitle\PY{p}{(}\PY{k+kp}{paste}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{Equation DGP\PYZdq{}}\PY{p}{,}\PY{k+kp}{toString}\PY{p}{(}i\PY{p}{)}\PY{p}{,}sep\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
+             plot
+         \PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}33}]:} make\PYZus{}the\PYZus{}plot\PY{p}{(}\PY{l+m}{1}\PY{p}{)}
+\end{Verbatim}
+
+    
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Pset3_files/Pset3_76_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}34}]:} make\PYZus{}the\PYZus{}plot\PY{p}{(}\PY{l+m}{2}\PY{p}{)}
+\end{Verbatim}
+
+    
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Pset3_files/Pset3_77_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}35}]:} make\PYZus{}the\PYZus{}plot\PY{p}{(}\PY{l+m}{3}\PY{p}{)}
+\end{Verbatim}
+
+    
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Pset3_files/Pset3_78_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}36}]:} make\PYZus{}the\PYZus{}plot\PY{p}{(}\PY{l+m}{4}\PY{p}{)}
+\end{Verbatim}
+
+    
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Pset3_files/Pset3_79_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
 
     % Add a bibliography block to the postdoc
     
